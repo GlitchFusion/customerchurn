@@ -7,7 +7,7 @@ churn_prediction/
 ├── main.py                              # Entry point to run everything
 │
 ├── config/                              # Configuration layer
-│   └── configs.py                      # Centralised params (paths, hyperparams, seeds)
+│   └── configs.py                       # Centralised params (paths, hyperparams, seeds)
 │
 ├── src/                                 # Core source code (modular)
 │   ├── data/
@@ -41,10 +41,9 @@ churn_prediction/
 │
 ├── data/                                # All datasets
 │   ├── raw/
-│   │   └── telco_churn.csv              # Place your original file here
+│   │   └── Telco-Customer-Churn-Data.csv.csv              # Place your original file here
 │   ├── processed/
 │   │   └── churn_processed.csv          # Saved after preprocessing
-│   └── external/                        # Reference files (e.g., feature mappings)
 │
 ├── models/                              # Persisted models + preprocessors
 │   ├── custom_model.pkl
