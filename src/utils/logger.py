@@ -4,7 +4,7 @@ import logging
 import sys
 from config.configs import Config
 
-def log_setup(name = __name__, log_file = Config.LOGS_DIR):
+def setup_logger(name = __name__, log_file = Config.LOGS_DIR):
     level=logging.INFO
 
     logger = logging.getLogger(name)
