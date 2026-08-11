@@ -1,8 +1,8 @@
 import pandas as pd
 from config.configs import Config
-from src.utils.logger import log_setup
+from src.utils.logger import setup_logger
 
-logger = log_setup(__name__)
+logger = setup_logger(__name__)
 
 def load_data():
     logger.info(f"Loading data from {Config.RAW_DATA_DIR}")
