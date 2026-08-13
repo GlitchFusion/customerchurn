@@ -1,0 +1,232 @@
+/* dark theme for churn prediction app */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* navigation bar */
+nav {
+    background-color: #1e1e1e;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+nav .brand {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #bb86fc;
+}
+
+nav .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+nav .nav-links a {
+    color: #b0b0b0;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+nav .nav-links a:hover {
+    background-color: #2a2a2a;
+    color: #ffffff;
+}
+
+nav .nav-links a.active {
+    background-color: #333;
+    color: #bb86fc;
+}
+
+/* main container */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+/* cards */
+.card {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #333;
+}
+
+.card h2 {
+    color: #bb86fc;
+    margin-bottom: 1rem;
+    font-weight: 400;
+}
+
+.card h3 {
+    color: #bbb;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+}
+
+/* forms */
+form label {
+    display: block;
+    margin-top: 1rem;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+form input, form select {
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 0.2rem;
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+form input:focus, form select:focus {
+    outline: none;
+    border-color: #bb86fc;
+}
+
+form .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 700px) {
+    form .row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.btn {
+    background-color: #bb86fc;
+    color: #121212;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background-color: #9f6fe0;
+}
+
+/* result display */
+.result-box {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 6px;
+    background-color: #2a2a2a;
+    border-left: 5px solid #bb86fc;
+}
+
+.result-box .probability {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.result-box .label {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+/* logs page */
+.log-content {
+    background-color: #0d0d0d;
+    padding: 1.5rem;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    max-height: 80vh;
+    border: 1px solid #333;
+    color: #d0d0d0;
+}
+
+/* plots page */
+.plot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.plot-item {
+    background-color: #1a1a1a;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #333;
+    transition: transform 0.2s;
+}
+
+.plot-item:hover {
+    transform: scale(1.01);
+}
+
+.plot-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    background-color: #000;
+}
+
+.plot-caption {
+    padding: 1rem;
+    background-color: #1e1e1e;
+}
+
+.plot-caption .plot-title {
+    font-weight: bold;
+    color: #bb86fc;
+    margin-bottom: 0.3rem;
+}
+
+.plot-caption .plot-purpose {
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+/* utility */
+.text-center {
+    text-align: center;
+}
+
+.mt-2 {
+    margin-top: 2rem;
+}
+
+.mb-1 {
+    margin-bottom: 1rem;
+}
+
+.highlight {
+    color: #bb86fc;
+}

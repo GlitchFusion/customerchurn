@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>Visualizations</h2>
+    <p>All plots generated during EDA and model evaluation are displayed below with descriptions.</p>
+
+    {% if plot_files %}
+        <div class="plot-grid">
+            {% for plot in plot_files %}
+            <div class="plot-item">
+                <img src="{{ plot.path }}" alt="{{ plot.title }}">
+                <div class="plot-caption">
+                    <div class="plot-title">{{ plot.title }}</div>
+                    <div class="plot-purpose">
+                        {% if 'target' in plot.filename %}
+                        purpose: shows the distribution of churn vs non-churn customers.
+                        {% elif 'correlation' in plot.filename %}
+                        purpose: heatmap of correlations among numeric features.
+                        {% elif 'distribution' in plot.filename %}
+                        purpose: histogram and density plot of a numeric feature.
+                        {% elif 'churn_by' in plot.filename %}
+                        purpose: churn rate breakdown by a categorical variable.
+                        {% elif 'roc' in plot.filename %}
+                        purpose: roc curve showing model discrimination ability.
+                        {% elif 'confusion' in plot.filename %}
+                        purpose: confusion matrix of predicted vs actual classes.
+                        {% elif 'importance' in plot.filename %}
+                        purpose: top features that drive churn (positive = risk).
+                        {% elif 'loss' in plot.filename %}
+                        purpose: training loss over epochs (convergence check).
+                        {% elif 'threshold' in plot.filename %}
+                        purpose: precision/recall trade-off across thresholds.
+                        {% else %}
+                        purpose: exploratory or diagnostic visualization.
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No plots found. Please run <code>main.py</code> first to generate visualizations.</p>
+    {% endif %}
+</div>
+{% endblock %}
