@@ -103,7 +103,7 @@ def EDA(df: pd.DataFrame) -> dict:
         logger.info(f"  {stats.to_string()}")
 
     # generating distribution plot - target_col removed
-    plot_numerical_distribution(df, col, save=True)  # <-- fixed this line
+    plot_numerical_distribution(df, col, save=True) 
     if target in df.columns:
         plot_churn_boxplot(df, col, target_col=target, save=True)
 

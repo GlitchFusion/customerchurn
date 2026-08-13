@@ -40,11 +40,7 @@ if preprocessor_data is None or custom_model is None:
 preprocessor = preprocessor_data['pipeline'] if preprocessor_data else None
 feature_names = preprocessor_data['feature_names'] if preprocessor_data else None
 
-
-# ---------------------------------------------------------------------
 # routes
-# ---------------------------------------------------------------------
-
 @app.route('/')
 def index():
     """home page - prediction form."""
@@ -158,9 +154,6 @@ def serve_figure(filename):
     return send_from_directory(Config.FIGURES_DIR, filename)
 
 
-# ---------------------------------------------------------------------
 # run the app
-# ---------------------------------------------------------------------
-
 if __name__ == '__main__':
     app.run(host=Config.API_HOST, port=Config.API_PORT, debug=True)

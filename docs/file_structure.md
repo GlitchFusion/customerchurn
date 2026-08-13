@@ -43,7 +43,6 @@ churn_prediction/
 │   ├── raw/
 │   │   └── Telco-Customer-Churn-Data.csv.csv              # Place your original file here
 │   ├── processed/
-│   │   └── churn_processed.csv          # Saved after preprocessing
 │
 ├── models/                              # Persisted models + preprocessors
 │   ├── custom_model.pkl
