@@ -23,17 +23,15 @@ def compute_all_metrics(y_true, y_pred, y_pred_proba):
     f1 = f1_score(y_true, y_pred, zero_division=0)
     roc_auc = roc_auc_score(y_true, y_pred_proba)
 
-    # get confusion matrix for reference
+    # get confusion matrix
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
 
-    # log the confusion matrix values
     logger.info("confusion matrix:")
     logger.info("    true negatives: %d", tn)
     logger.info("    false positives: %d", fp)
     logger.info("    false negatives: %d", fn)
     logger.info("    true positives: %d", tp)
 
-    # create metrics dictionary
     metrics = {
         'accuracy': accuracy,
         'precision': precision,
@@ -50,18 +48,15 @@ def compute_all_metrics(y_true, y_pred, y_pred_proba):
 
 
 def print_metrics_comparison(custom_metrics, sklearn_metrics):
-    # only compare the main metrics (not confusion matrix values)
     metric_names = ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']
 
     print("\n" + "=" * 60)
     print("performance comparison: custom vs sklearn")
     print("=" * 60)
 
-    # header
     print(f"{'metric':<15} {'custom':<15} {'sklearn':<15} {'difference':<15}")
     print("-" * 60)
 
-    # each metric
     for name in metric_names:
         custom_value = custom_metrics.get(name, 0)
         sklearn_value = sklearn_metrics.get(name, 0)

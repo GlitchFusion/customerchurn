@@ -5,6 +5,81 @@
     <h2>Visualizations</h2>
     <p>All plots generated during EDA and model evaluation are displayed below with descriptions.</p>
 
+    <!-- PERFORMANCE METRICS CARD -->
+    <div class="performance-card" id="performanceCard">
+        <h3>Model Performance Metrics</h3>
+        <div class="metrics-grid">
+            <div class="metric-item">
+                <span class="metric-label">Accuracy</span>
+                <span class="metric-value" id="accuracy">--</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">Precision</span>
+                <span class="metric-value" id="precision">--</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">Recall</span>
+                <span class="metric-value" id="recall">--</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">F1 Score</span>
+                <span class="metric-value" id="f1">--</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">ROC-AUC</span>
+                <span class="metric-value" id="roc_auc">--</span>
+            </div>
+        </div>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <button class="btn-small" onclick="loadMetrics()">Refresh</button>
+            <button class="btn-small" onclick="openModal()">Detailed View</button>
+        </div>
+    </div>
+
+    <!-- MODAL FOR DETAILED METRICS -->
+    <div id="metricsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Detailed Model Performance</h2>
+            <div style="margin:1rem 0; color:#888; font-size:0.9rem;">
+                actual metrics from training
+            </div>
+            <div class="modal-metrics">
+                <div class="modal-metric">
+                    <span class="modal-label">Accuracy</span>
+                    <span class="modal-value" id="modal_accuracy">--</span>
+                </div>
+                <div class="modal-metric">
+                    <span class="modal-label">Precision</span>
+                    <span class="modal-value" id="modal_precision">--</span>
+                </div>
+                <div class="modal-metric">
+                    <span class="modal-label">Recall</span>
+                    <span class="modal-value" id="modal_recall">--</span>
+                </div>
+                <div class="modal-metric">
+                    <span class="modal-label">F1 Score</span>
+                    <span class="modal-value" id="modal_f1">--</span>
+                </div>
+                <div class="modal-metric">
+                    <span class="modal-label">ROC-AUC</span>
+                    <span class="modal-value" id="modal_roc_auc">--</span>
+                </div>
+            </div>
+            <div style="margin-top:1rem; padding:1rem; background-color:#2a2a2a; border-radius:6px;">
+                <h4 style="color:#fcc986; margin-bottom:0.5rem;">Confusion Matrix</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.9rem;">
+                    <span>True Negatives: <strong id="modal_tn">--</strong></span>
+                    <span>False Positives: <strong id="modal_fp">--</strong></span>
+                    <span>False Negatives: <strong id="modal_fn">--</strong></span>
+                    <span>True Positives: <strong id="modal_tp">--</strong></span>
+                </div>
+            </div>
+            <button class="btn" onclick="closeModal()" style="background:#444;color:#fff; margin-top:1rem;">Close</button>
+        </div>
+    </div>
+
+    <!-- PLOTS -->
     {% if plot_files %}
         <div class="plot-grid">
             {% for plot in plot_files %}
@@ -25,6 +100,10 @@
                         purpose: roc curve showing model discrimination ability.
                         {% elif 'confusion' in plot.filename %}
                         purpose: confusion matrix of predicted vs actual classes.
+                        <div class="legend">
+                            <span style="color:#1f77b4;">■ not churned</span>
+                            <span style="color:#ff7f0e;">■ churned</span>
+                        </div>
                         {% elif 'importance' in plot.filename %}
                         purpose: top features that drive churn (positive = risk).
                         {% elif 'loss' in plot.filename %}
@@ -43,4 +122,70 @@
         <p>No plots found. Please run <code>main.py</code> first to generate visualizations.</p>
     {% endif %}
 </div>
+
+<script>
+    function loadMetrics() {
+        fetch('/metrics')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('error:', data.error);
+                    document.getElementById('accuracy').textContent = 'error';
+                    return;
+                }
+                document.getElementById('accuracy').textContent = (data.accuracy * 100).toFixed(2) + '%';
+                document.getElementById('precision').textContent = (data.precision * 100).toFixed(2) + '%';
+                document.getElementById('recall').textContent = (data.recall * 100).toFixed(2) + '%';
+                document.getElementById('f1').textContent = (data.f1_score * 100).toFixed(2) + '%';
+                document.getElementById('roc_auc').textContent = (data.roc_auc * 100).toFixed(2) + '%';
+            })
+            .catch(error => {
+                console.error('error loading metrics:', error);
+                document.getElementById('accuracy').textContent = 'error';
+            });
+    }
+
+    function openModal() {
+        document.getElementById('metricsModal').style.display = 'block';
+        loadModalMetrics();
+    }
+
+    function closeModal() {
+        document.getElementById('metricsModal').style.display = 'none';
+    }
+
+    function loadModalMetrics() {
+        fetch('/metrics')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('error:', data.error);
+                    return;
+                }
+                document.getElementById('modal_accuracy').textContent = (data.accuracy * 100).toFixed(2) + '%';
+                document.getElementById('modal_precision').textContent = (data.precision * 100).toFixed(2) + '%';
+                document.getElementById('modal_recall').textContent = (data.recall * 100).toFixed(2) + '%';
+                document.getElementById('modal_f1').textContent = (data.f1_score * 100).toFixed(2) + '%';
+                document.getElementById('modal_roc_auc').textContent = (data.roc_auc * 100).toFixed(2) + '%';
+                document.getElementById('modal_tn').textContent = data.true_negatives || '--';
+                document.getElementById('modal_fp').textContent = data.false_positives || '--';
+                document.getElementById('modal_fn').textContent = data.false_negatives || '--';
+                document.getElementById('modal_tp').textContent = data.true_positives || '--';
+            })
+            .catch(error => {
+                console.error('error loading metrics:', error);
+            });
+    }
+
+    // close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('metricsModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    // load metrics when page loads
+    document.addEventListener('DOMContentLoaded', loadMetrics);
+</script>
 {% endblock %}

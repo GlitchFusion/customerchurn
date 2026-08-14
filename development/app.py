@@ -1,10 +1,11 @@
 # IMPORTS
 import os
 import sys
+import json
 import pandas as pd
 from flask import Flask, render_template, request, jsonify, send_from_directory
 
-# add parent path to sys.path
+# adding parent path to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config.configs import Config
@@ -13,7 +14,7 @@ from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
-# initialize flask app
+# initializing flask app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'churn-prediction-demo-key'
 
@@ -29,10 +30,10 @@ if preprocessor_data is None or custom_model is None:
 preprocessor = preprocessor_data['pipeline'] if preprocessor_data else None
 feature_names = preprocessor_data['feature_names'] if preprocessor_data else None
 
+
 # routes
 @app.route('/')
 def index():
-    """home page - prediction form."""
     return render_template('index.html')
 
 
@@ -115,14 +116,12 @@ def plots():
     if os.path.exists(figures_dir):
         for file in os.listdir(figures_dir):
             if file.endswith('.png'):
-                # extract a title from the filename
                 title = file.replace('.png', '').replace('_', ' ').title()
                 plot_files.append({
                     'filename': file,
                     'title': title,
                     'path': f'/plots/figures/{file}'
                 })
-        # sort by filename
         plot_files.sort(key=lambda x: x['filename'])
     else:
         plot_files = []
@@ -136,6 +135,46 @@ def serve_figure(filename):
     return send_from_directory(Config.FIGURES_DIR, filename)
 
 
+@app.route('/metrics')
+def get_metrics():
+    metrics_file = os.path.join(Config.MODEL_DIR, 'metrics.json')
+    
+    if os.path.exists(metrics_file):
+        try:
+            with open(metrics_file, 'r') as f:
+                metrics = json.load(f)
+            return jsonify(metrics)
+        except Exception as e:
+            return jsonify({'error': f'error reading metrics file: {str(e)}'}), 500
+    else:
+        return jsonify({'error': 'metrics not found. please run main.py first.'}), 404
+
+
+@app.route('/metrics/comparison')
+def get_metrics_comparison():
+    custom_metrics_file = os.path.join(Config.MODEL_DIR, 'metrics.json')
+    sklearn_metrics_file = os.path.join(Config.MODEL_DIR, 'sklearn_metrics.json')
+    
+    result = {}
+    
+    if os.path.exists(custom_metrics_file):
+        with open(custom_metrics_file, 'r') as f:
+            result['custom'] = json.load(f)
+    else:
+        result['custom'] = {'error': 'custom metrics not found'}
+    
+    if os.path.exists(sklearn_metrics_file):
+        with open(sklearn_metrics_file, 'r') as f:
+            result['sklearn'] = json.load(f)
+    else:
+        result['sklearn'] = {'error': 'sklearn metrics not found'}
+    
+    return jsonify(result)
+
+
+# ---------------------------------------------------------------------
 # run the app
+# ---------------------------------------------------------------------
+
 if __name__ == '__main__':
     app.run(host=Config.API_HOST, port=Config.API_PORT, debug=True)
