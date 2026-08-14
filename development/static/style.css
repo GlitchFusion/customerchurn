@@ -188,6 +188,7 @@ form .row {
     overflow: hidden;
     border: 1px solid #333;
     transition: transform 0.2s;
+    max-width: 400px;
 }
 
 .plot-item:hover {
@@ -370,4 +371,73 @@ form .row {
     font-weight: bold;
     color: #f4fc86;
     margin-top: 0.3rem;
+}
+
+/* zoom modal styles */
+.zoom-modal .zoom-content {
+    background-color: #1e1e1e;
+    margin: 5% auto;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    border: 1px solid #333;
+    position: relative;
+    overflow-y: auto;
+}
+
+.zoom-modal .zoom-image-container {
+    background-color: #0d0d0d;
+    border-radius: 4px;
+    padding: 0.5rem;
+    text-align: center;
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.zoom-modal .zoom-image {
+    max-width: 100%;
+    max-height: 65vh;
+    height: auto;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 4px;
+}
+
+.zoom-modal .zoom-close {
+    position: absolute;
+    right: 1rem;
+    top: 0.5rem;
+    font-size: 2rem;
+    color: #888;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.zoom-modal .zoom-close:hover {
+    color: #fff;
+}
+
+.plot-item img {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.plot-item img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(134, 252, 207, 0.3);
+}
+
+input {
+    border: none;
+    border-bottom: 2px solid gray;
+    background: none;
+    outline: none;
+    color: wheat;
+    padding: 2px;
+    margin-right: 20px;
+    width: 20vw;
+    font-size: 15px;
 }

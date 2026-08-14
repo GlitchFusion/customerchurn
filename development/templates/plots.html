@@ -36,55 +36,18 @@
         </div>
     </div>
 
-    <!-- MODAL FOR DETAILED METRICS -->
-    <div id="metricsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h2>Detailed Model Performance</h2>
-            <div style="margin:1rem 0; color:#888; font-size:0.9rem;">
-                actual metrics from training
-            </div>
-            <div class="modal-metrics">
-                <div class="modal-metric">
-                    <span class="modal-label">Accuracy</span>
-                    <span class="modal-value" id="modal_accuracy">--</span>
-                </div>
-                <div class="modal-metric">
-                    <span class="modal-label">Precision</span>
-                    <span class="modal-value" id="modal_precision">--</span>
-                </div>
-                <div class="modal-metric">
-                    <span class="modal-label">Recall</span>
-                    <span class="modal-value" id="modal_recall">--</span>
-                </div>
-                <div class="modal-metric">
-                    <span class="modal-label">F1 Score</span>
-                    <span class="modal-value" id="modal_f1">--</span>
-                </div>
-                <div class="modal-metric">
-                    <span class="modal-label">ROC-AUC</span>
-                    <span class="modal-value" id="modal_roc_auc">--</span>
-                </div>
-            </div>
-            <div style="margin-top:1rem; padding:1rem; background-color:#2a2a2a; border-radius:6px;">
-                <h4 style="color:#fcc986; margin-bottom:0.5rem;">Confusion Matrix</h4>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.9rem;">
-                    <span>True Negatives: <strong id="modal_tn">--</strong></span>
-                    <span>False Positives: <strong id="modal_fp">--</strong></span>
-                    <span>False Negatives: <strong id="modal_fn">--</strong></span>
-                    <span>True Positives: <strong id="modal_tp">--</strong></span>
-                </div>
-            </div>
-            <button class="btn" onclick="closeModal()" style="background:#444;color:#fff; margin-top:1rem;">Close</button>
-        </div>
+    <!-- SEARCH BAR -->
+    <div class="search-container">
+        <input type="text" id="plotSearch" class="search-input" placeholder="Search plots by name or purpose..." onkeyup="filterPlots()">
+        <span class="search-count" id="searchCount">showing all plots</span>
     </div>
 
-    <!-- PLOTS -->
-    {% if plot_files %}
-        <div class="plot-grid">
+    <!-- PLOTS GRID -->
+    <div class="plot-grid" id="plotGrid">
+        {% if plot_files %}
             {% for plot in plot_files %}
-            <div class="plot-item">
-                <img src="{{ plot.path }}" alt="{{ plot.title }}">
+            <div class="plot-item" data-title="{{ plot.title|lower }}" data-filename="{{ plot.filename|lower }}">
+                <img src="{{ plot.path }}" alt="{{ plot.title }}" onclick="openZoomModal('{{ plot.path }}', '{{ plot.title }}', '{{ plot.filename }}')" style="cursor:pointer;">
                 <div class="plot-caption">
                     <div class="plot-title">{{ plot.title }}</div>
                     <div class="plot-purpose">
@@ -100,10 +63,6 @@
                         purpose: roc curve showing model discrimination ability.
                         {% elif 'confusion' in plot.filename %}
                         purpose: confusion matrix of predicted vs actual classes.
-                        <div class="legend">
-                            <span style="color:#1f77b4;">■ not churned</span>
-                            <span style="color:#ff7f0e;">■ churned</span>
-                        </div>
                         {% elif 'importance' in plot.filename %}
                         purpose: top features that drive churn (positive = risk).
                         {% elif 'loss' in plot.filename %}
@@ -117,10 +76,72 @@
                 </div>
             </div>
             {% endfor %}
+        {% else %}
+            <p>No plots found. Please run <code>main.py</code> first to generate visualizations.</p>
+        {% endif %}
+    </div>
+
+    <!-- NO RESULTS MESSAGE -->
+    <div id="noResults" style="display:none; text-align:center; padding:3rem; color:#888;">
+        <p style="font-size:1.2rem;">🔍 no plots found matching your search</p>
+        <p style="font-size:0.9rem;">try using different keywords like "roc", "confusion", "feature", or "distribution"</p>
+    </div>
+</div>
+
+<!-- METRICS MODAL -->
+<div id="metricsModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2>Detailed Model Performance</h2>
+        <div style="margin:1rem 0; color:#888; font-size:0.9rem;">
+            actual metrics from training
         </div>
-    {% else %}
-        <p>No plots found. Please run <code>main.py</code> first to generate visualizations.</p>
-    {% endif %}
+        <div class="modal-metrics">
+            <div class="modal-metric">
+                <span class="modal-label">Accuracy</span>
+                <span class="modal-value" id="modal_accuracy">--</span>
+            </div>
+            <div class="modal-metric">
+                <span class="modal-label">Precision</span>
+                <span class="modal-value" id="modal_precision">--</span>
+            </div>
+            <div class="modal-metric">
+                <span class="modal-label">Recall</span>
+                <span class="modal-value" id="modal_recall">--</span>
+            </div>
+            <div class="modal-metric">
+                <span class="modal-label">F1 Score</span>
+                <span class="modal-value" id="modal_f1">--</span>
+            </div>
+            <div class="modal-metric">
+                <span class="modal-label">ROC-AUC</span>
+                <span class="modal-value" id="modal_roc_auc">--</span>
+            </div>
+        </div>
+        <div style="margin-top:1rem; padding:1rem; background-color:#2a2a2a; border-radius:6px;">
+            <h4 style="color:#fcdc86; margin-bottom:0.5rem;">Confusion Matrix</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.9rem;">
+                <span>True Negatives: <strong id="modal_tn">--</strong></span>
+                <span>False Positives: <strong id="modal_fp">--</strong></span>
+                <span>False Negatives: <strong id="modal_fn">--</strong></span>
+                <span>True Positives: <strong id="modal_tp">--</strong></span>
+            </div>
+        </div>
+        <button class="btn" onclick="closeModal()" style="background:#444;color:#fff; margin-top:1rem;">Close</button>
+    </div>
+</div>
+
+<!-- ZOOM MODAL FOR GRAPHS -->
+<div id="zoomModal" class="modal zoom-modal">
+    <div class="zoom-content">
+        <span class="close-btn zoom-close" onclick="closeZoomModal()">&times;</span>
+        <h3 id="zoomTitle" style="color:#fcbb86; margin-bottom:0.5rem;">Graph Title</h3>
+        <div class="zoom-image-container">
+            <img id="zoomImage" src="" alt="zoomed plot" class="zoom-image">
+        </div>
+        <div id="zoomPurpose" style="color:#aaa; font-size:0.9rem; margin-top:0.5rem; text-align:center;"></div>
+        <button class="btn" onclick="closeZoomModal()" style="background:#444;color:#fff; margin-top:1rem; display:block; margin-left:auto; margin-right:auto;">Close</button>
+    </div>
 </div>
 
 <script>
@@ -177,15 +198,120 @@
             });
     }
 
-    // close modal when clicking outside
     window.onclick = function(event) {
-        const modal = document.getElementById('metricsModal');
-        if (event.target == modal) {
+        const metricsModal = document.getElementById('metricsModal');
+        if (event.target == metricsModal) {
             closeModal();
+        }
+        const zoomModal = document.getElementById('zoomModal');
+        if (event.target == zoomModal) {
+            closeZoomModal();
         }
     }
 
-    // load metrics when page loads
-    document.addEventListener('DOMContentLoaded', loadMetrics);
+
+    function filterPlots() {
+        const input = document.getElementById('plotSearch');
+        const filter = input.value.toLowerCase().trim();
+        const plotItems = document.querySelectorAll('.plot-item');
+        const noResults = document.getElementById('noResults');
+        let visibleCount = 0;
+
+        plotItems.forEach(function(item) {
+            const title = item.getAttribute('data-title') || '';
+            const filename = item.getAttribute('data-filename') || '';
+            const purpose = item.querySelector('.plot-purpose')?.textContent?.toLowerCase() || '';
+
+            const matches = filter === '' ||
+                           title.includes(filter) ||
+                           filename.includes(filter) ||
+                           purpose.includes(filter);
+
+            if (matches) {
+                item.style.display = 'block';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        const totalPlots = plotItems.length;
+        const countDisplay = document.getElementById('searchCount');
+        if (filter === '') {
+            countDisplay.textContent = `showing all ${totalPlots} plots`;
+        } else {
+            countDisplay.textContent = `showing ${visibleCount} of ${totalPlots} plots`;
+        }
+
+        if (visibleCount === 0 && filter !== '') {
+            noResults.style.display = 'block';
+        } else {
+            noResults.style.display = 'none';
+        }
+    }
+
+    function openZoomModal(imagePath, title, filename) {
+        const modal = document.getElementById('zoomModal');
+        const img = document.getElementById('zoomImage');
+        const titleElement = document.getElementById('zoomTitle');
+        const purposeElement = document.getElementById('zoomPurpose');
+
+        img.src = imagePath;
+        titleElement.textContent = title;
+
+        let purpose = '';
+        if (filename.includes('target')) {
+            purpose = 'shows the distribution of churn vs non-churn customers.';
+        } else if (filename.includes('correlation')) {
+            purpose = 'heatmap of correlations among numeric features.';
+        } else if (filename.includes('distribution')) {
+            purpose = 'histogram and density plot of a numeric feature.';
+        } else if (filename.includes('churn_by')) {
+            purpose = 'churn rate breakdown by a categorical variable.';
+        } else if (filename.includes('roc')) {
+            purpose = 'roc curve showing model discrimination ability.';
+        } else if (filename.includes('confusion')) {
+            purpose = 'confusion matrix of predicted vs actual classes.';
+        } else if (filename.includes('importance')) {
+            purpose = 'top features that drive churn (positive = risk).';
+        } else if (filename.includes('loss')) {
+            purpose = 'training loss over epochs (convergence check).';
+        } else if (filename.includes('threshold')) {
+            purpose = 'precision/recall trade-off across thresholds.';
+        } else {
+            purpose = 'exploratory or diagnostic visualization.';
+        }
+
+        purposeElement.textContent = 'purpose: ' + purpose;
+
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeZoomModal() {
+        document.getElementById('zoomModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // close zoom modal with escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const zoomModal = document.getElementById('zoomModal');
+            if (zoomModal.style.display === 'block') {
+                closeZoomModal();
+            }
+            const metricsModal = document.getElementById('metricsModal');
+            if (metricsModal.style.display === 'block') {
+                closeModal();
+            }
+        }
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadMetrics();
+        const totalPlots = document.querySelectorAll('.plot-item').length;
+        document.getElementById('searchCount').textContent = `showing all ${totalPlots} plots`;
+    });
 </script>
 {% endblock %}

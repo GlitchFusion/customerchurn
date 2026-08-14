@@ -16,7 +16,7 @@ logger = setup_logger(__name__)
 
 # initializing flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'churn-prediction-demo-key'
+app.config['SECRET_KEY'] = 'churn-prediction-temp-key'
 
 # load artifacts at startup
 print("loading artifacts...")
