@@ -1,14 +1,3 @@
-"""
-app.py - flask web application for churn prediction.
-
-this application serves three pages:
-1. prediction - input customer data and get churn probability
-2. logs - display training logs from the pipeline
-3. visualizations - show all plots with descriptions
-
-purpose: to demonstrate the model in a user-friendly web interface.
-"""
-
 # IMPORTS
 import os
 import sys
@@ -49,11 +38,6 @@ def index():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    """
-    handle prediction request from form.
-    expects form data with all customer features.
-    returns json with churn probability and prediction.
-    """
     if preprocessor is None or custom_model is None:
         return jsonify({'error': 'model or preprocessor not loaded. run main.py first.'}), 500
 
@@ -113,7 +97,6 @@ def predict():
 
 @app.route('/logs')
 def logs():
-    """display the training log file."""
     log_file = Config.LOG_PATH
     log_content = ""
     if os.path.exists(log_file):
@@ -127,7 +110,6 @@ def logs():
 
 @app.route('/plots')
 def plots():
-    """display all visualizations from reports/figures/."""
     figures_dir = Config.FIGURES_DIR
     plot_files = []
     if os.path.exists(figures_dir):

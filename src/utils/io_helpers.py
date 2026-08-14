@@ -1,14 +1,3 @@
-"""
-io_helpers.py - helper functions for saving and loading models.
-
-this module provides functions to:
-- save models and preprocessors to disk
-- load models and preprocessors from disk
-- check if files exist
-
-purpose: to keep file i/o operations in one place for reusability.
-"""
-
 # IMPORTS
 import os
 import joblib
@@ -28,16 +17,6 @@ if logger is None:
 
 
 def save_model(model, filepath):
-    """
-    save a model to disk using joblib.
-
-    arguments:
-        model: trained model object (custom or sklearn)
-        filepath: path where the model should be saved
-
-    returns:
-        bool: true if save was successful, false otherwise
-    """
     try:
         # check if directory exists, create if not
         directory = os.path.dirname(filepath)
@@ -56,15 +35,6 @@ def save_model(model, filepath):
 
 
 def load_model(filepath):
-    """
-    load a model from disk using joblib.
-
-    arguments:
-        filepath: path to the saved model file
-
-    returns:
-        object: loaded model, or none if loading fails
-    """
     try:
         if not os.path.exists(filepath):
             logger.error("model file not found: %s", filepath)
@@ -80,18 +50,6 @@ def load_model(filepath):
 
 
 def save_preprocessor(preprocessor, filepath=Config.PREPROCESSOR_PATH):
-    """
-    save the fitted preprocessor to disk.
-
-    this is a convenience wrapper around save_model().
-
-    arguments:
-        preprocessor: fitted preprocessor object
-        filepath: path where the preprocessor should be saved
-
-    returns:
-        bool: true if save was successful, false otherwise
-    """
     try:
         # preprocessor should have a save method
         preprocessor.save(filepath)
@@ -103,15 +61,6 @@ def save_preprocessor(preprocessor, filepath=Config.PREPROCESSOR_PATH):
 
 
 def load_preprocessor(filepath=Config.PREPROCESSOR_PATH):
-    """
-    load the saved preprocessor from disk.
-
-    arguments:
-        filepath: path to the saved preprocessor file
-
-    returns:
-        object: loaded preprocessor, or none if loading fails
-    """
     try:
         if not os.path.exists(filepath):
             logger.error("preprocessor file not found: %s", filepath)
@@ -127,15 +76,6 @@ def load_preprocessor(filepath=Config.PREPROCESSOR_PATH):
 
 
 def check_file_exists(filepath):
-    """
-    check if a file exists at the given path.
-
-    arguments:
-        filepath: path to check
-
-    returns:
-        bool: true if file exists, false otherwise
-    """
     exists = os.path.exists(filepath)
     if exists:
         logger.info("file exists: %s", filepath)
@@ -145,12 +85,6 @@ def check_file_exists(filepath):
 
 
 def get_model_paths():
-    """
-    get all model paths from config.
-
-    returns:
-        dict: dictionary with model paths
-    """
     paths = {
         'custom_model': Config.CUSTOM_MODEL_PATH,
         'sklearn_model': Config.SKLEARN_MODEL_PATH,

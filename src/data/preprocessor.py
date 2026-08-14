@@ -1,11 +1,3 @@
-"""
-preprocessor.py - contains all data cleaning, feature engineering,
-encoding, scaling, and train/test splitting logic.
-
-purpose: to transform raw data into clean, model-ready data.
-no eda or data loading happens here.
-"""
-
 # IMPORTS
 import pandas as pd
 import numpy as np
@@ -23,11 +15,6 @@ logger = setup_logger(__name__)
 
 
 class Preprocessor:
-    """
-    complete preprocessing pipeline for the telco customer churn dataset.
-    handles cleaning, feature engineering, encoding, scaling, and splitting.
-    """
-
     def __init__(self):
         self.pipeline = None
         self.feature_names = None
@@ -37,27 +24,16 @@ class Preprocessor:
         self.y_test = None
 
     def fit_transform(self, df: pd.DataFrame):
-        """
-        execute the complete preprocessing pipeline.
-
-        arguments:
-            df: raw dataframe (as loaded from loader.py)
-
-        returns:
-            tuple: (X_train, X_test, y_train, y_test)
-        """
         logger.info("starting preprocessing pipeline...")
 
-        # ------------------------------------------------------------------
+
         # [1] drop customer id column
-        # ------------------------------------------------------------------
         if Config.ID_COL in df.columns:
             df = df.drop(columns=[Config.ID_COL])
             logger.info("[1] dropped '%s' column", Config.ID_COL)
 
-        # ------------------------------------------------------------------
+
         # [2] fix totalcharges
-        # ------------------------------------------------------------------
         if 'TotalCharges' in df.columns:
             # convert to numeric (empty strings become nan)
             df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
@@ -66,9 +42,8 @@ class Preprocessor:
             df['TotalCharges'] = df['TotalCharges'].fillna(median_val)
             logger.info("[2] fixed totalcharges: filled missing with median (%.2f)", median_val)
 
-        # ------------------------------------------------------------------
+
         # [3] create new features
-        # ------------------------------------------------------------------
         # 3a. tenure_group (categorical bins)
         df['tenure_group'] = pd.cut(
             df['tenure'],
@@ -82,9 +57,9 @@ class Preprocessor:
         df['avg_monthly_spend'] = df['TotalCharges'] / (df['tenure'] + 1)
         logger.info("[3b] created avg_monthly_spend feature")
 
-        # ------------------------------------------------------------------
+
         # [4] separate features and target
-        # ------------------------------------------------------------------
+
         target = Config.TARGET_COL
         if target not in df.columns:
             raise ValueError(f"target column '{target}' not found in dataframe")
@@ -94,9 +69,8 @@ class Preprocessor:
         logger.info("[4] target distribution: %d churned, %d not churned",
                    sum(y), len(y) - sum(y))
 
-        # ------------------------------------------------------------------
+
         # [5] define column types for transformer
-        # ------------------------------------------------------------------
         # numeric features will be scaled
         numeric_features = [
             'tenure',
@@ -123,9 +97,8 @@ class Preprocessor:
         logger.info("[5] numeric features: %s", numeric_features)
         logger.info("[5] categorical features: %s", categorical_features)
 
-        # ------------------------------------------------------------------
+
         # [6] build columntransformer pipeline
-        # ------------------------------------------------------------------
         numeric_transformer = Pipeline(steps=[
             ('scaler', StandardScaler())
         ])
@@ -158,9 +131,8 @@ class Preprocessor:
         self.feature_names = num_feature_names + cat_feature_names
         logger.info("[6] total features after encoding: %d", len(self.feature_names))
 
-        # ------------------------------------------------------------------
+
         # [7] train/test split
-        # ------------------------------------------------------------------
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             X_processed,
             y,
@@ -177,16 +149,6 @@ class Preprocessor:
         return self.X_train, self.X_test, self.y_train, self.y_test
 
     def transform(self, X_raw: pd.DataFrame):
-        """
-        transform raw data using the fitted pipeline.
-        used during deployment to process new customer data.
-
-        arguments:
-            X_raw: raw feature data (no target column)
-
-        returns:
-            transformed features ready for model prediction.
-        """
         if self.pipeline is None:
             raise ValueError("preprocessor has not been fitted. call fit_transform() first.")
 
@@ -206,12 +168,6 @@ class Preprocessor:
         return X_processed
 
     def save(self, filepath=Config.PREPROCESSOR_PATH):
-        """
-        save the fitted preprocessor pipeline to disk.
-
-        arguments:
-            filepath: path to save the preprocessor.
-        """
         if self.pipeline is None:
             raise ValueError("preprocessor has not been fitted. call fit_transform() first.")
 
@@ -222,12 +178,6 @@ class Preprocessor:
         logger.info("WOOOOH!! preprocessor saved to: %s", filepath)
 
     def load(self, filepath=Config.PREPROCESSOR_PATH):
-        """
-        load a previously saved preprocessor from disk.
-
-        arguments:
-            filepath: path to the saved preprocessor.
-        """
         data = joblib.load(filepath)
         self.pipeline = data['pipeline']
         self.feature_names = data['feature_names']

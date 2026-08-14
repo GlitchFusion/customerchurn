@@ -1,16 +1,3 @@
-"""
-custom_logistic.py - logistic regression implementation from scratch using numpy.
-
-this module contains:
-- sigmoid function
-- weighted log-loss (cross-entropy)
-- batch gradient descent
-- l1 and l2 regularization support
-- class imbalance handling via sample weights
-
-purpose: to implement logistic regression without using sklearn.
-"""
-
 # IMPORTS
 import numpy as np
 
@@ -22,29 +9,9 @@ logger = setup_logger(__name__)
 
 
 class CustomLogisticRegression:
-    """
-    logistic regression classifier implemented from scratch using numpy.
-
-    supports:
-    - gradient descent optimization
-    - weighted loss for class imbalance
-    - l1 and l2 regularization
-    - loss history tracking for convergence monitoring
-    """
-
     def __init__(self, learning_rate=Config.LEARNING_RATE, epochs=Config.EPOCHS,
                  class_weight=Config.CLASS_WEIGHT, reg=Config.REGULARIZATION,
                  reg_lambda=Config.REG_LAMBDA):
-        """
-        initialize the logistic regression model.
-
-        arguments:
-            learning_rate: step size for gradient descent
-            epochs: number of training iterations
-            class_weight: 'balanced', none, or dict like {0: 1.0, 1: 5.0}
-            reg: regularization type ('l1', 'l2', or none)
-            reg_lambda: regularization strength
-        """
         self.learning_rate = learning_rate
         self.epochs = epochs
         self.class_weight = class_weight
@@ -55,31 +22,11 @@ class CustomLogisticRegression:
         self.loss_history = []
 
     def _sigmoid(self, z):
-        """
-        sigmoid activation function.
-
-        arguments:
-            z: linear combination (dot product + bias)
-
-        returns:
-            probability values between 0 and 1
-        """
         # clip to prevent overflow in exp
         z_clipped = np.clip(z, -250, 250)
         return 1 / (1 + np.exp(-z_clipped))
 
     def _compute_loss(self, y, y_pred, m):
-        """
-        compute weighted log-loss with optional regularization.
-
-        arguments:
-            y: true labels (0 or 1)
-            y_pred: predicted probabilities
-            m: number of samples
-
-        returns:
-            computed loss value
-        """
         # compute sample weights for class imbalance
         if self.class_weight == 'balanced':
             unique, counts = np.unique(y, return_counts=True)
@@ -104,16 +51,6 @@ class CustomLogisticRegression:
         return loss
 
     def fit(self, X, y):
-        """
-        train the logistic regression model using batch gradient descent.
-
-        arguments:
-            X: training features (shape: m x n)
-            y: training labels (shape: m,)
-
-        returns:
-            self: the fitted model
-        """
         m, n = X.shape
         self.weights = np.zeros(n)
         self.bias = 0
@@ -163,15 +100,6 @@ class CustomLogisticRegression:
         return self
 
     def predict_proba(self, X):
-        """
-        predict class probabilities for input samples.
-
-        arguments:
-            X: input features
-
-        returns:
-            predicted probabilities (shape: m,)
-        """
         if self.weights is None:
             raise ValueError("model has not been fitted yet. call fit() first.")
 
@@ -179,15 +107,5 @@ class CustomLogisticRegression:
         return self._sigmoid(linear_model)
 
     def predict(self, X, threshold=0.5):
-        """
-        predict class labels for input samples.
-
-        arguments:
-            X: input features
-            threshold: decision threshold (default 0.5)
-
-        returns:
-            predicted labels (0 or 1)
-        """
         probs = self.predict_proba(X)
         return (probs >= threshold).astype(int)

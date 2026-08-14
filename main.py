@@ -131,17 +131,8 @@ def main():
     logger.info("    plots: %s", Config.FIGURES_DIR)
     logger.info("    log file: %s", Config.LOG_PATH)
     
-    logger.info("\n")
-    logger.info("next steps:")
-    logger.info("    1. run 'python main.py' to execute the full pipeline")
-    logger.info("    2. check reports/figures/ for all visualizations")
-    logger.info("    3. run 'cd deployment && python app.py' to start the api")
-    logger.info("    4. visit http://localhost:5000 to test predictions")
-    logger.info("\n")
-    
     return custom_model, custom_metrics, sklearn_metrics
 
 
-# entry point
 if __name__ == "__main__":
     main()

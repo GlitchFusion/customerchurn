@@ -1,10 +1,3 @@
-"""
-configs.py - centralised configuration for the churn prediction project.
-
-all paths, hyperparameters, and settings are defined here.
-purpose: single source of truth for the entire pipeline.
-"""
-
 # IMPORTS
 import os
 from dataclasses import dataclass
@@ -12,13 +5,9 @@ from dataclasses import dataclass
 
 @dataclass
 class Config:
-    """
-    configuration class for the churn prediction pipeline.
-    contains all paths, parameters, and settings.
-    """
 
     # 1. file and directory paths
-    # root directory (go up one level from config folder)
+    # root directory
     ROOT_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     # data paths
@@ -58,14 +47,14 @@ class Config:
     # 4. model hyperparameters
     LEARNING_RATE: float = 0.01
     EPOCHS: int = 1000
-    BATCH_SIZE: int = None  # none = full batch gradient descent
+    BATCH_SIZE: int = None
 
-    # 5. regularization (handles overfitting)
-    REGULARIZATION: str = None  # options: None, 'l1', 'l2'
+    # 5. regularization
+    REGULARIZATION: str = None
     REG_LAMBDA: float = 0.1
 
-    # 6. class imbalance (handles imbalanced data)
-    CLASS_WEIGHT: str = 'balanced'  # options: 'balanced', None, or dict
+    # 6. class imbalance
+    CLASS_WEIGHT: str = 'balanced'
 
     # 7. feature engineering parameters
     TENURE_BINS = [-1, 12, 24, 48, 100]

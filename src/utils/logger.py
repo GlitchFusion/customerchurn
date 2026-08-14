@@ -1,12 +1,3 @@
-"""
-logger.py - sets up logging for the project.
-
-this module provides a consistent logger with both file and console output.
-the logger automatically hides full file paths in log messages for privacy.
-
-purpose: to log all messages to both the console and a log file.
-"""
-
 # IMPORTS
 import logging
 import sys
@@ -17,11 +8,6 @@ from config.configs import Config
 
 
 class PathFilter(logging.Filter):
-    """
-    custom filter to remove full paths from log messages.
-    replaces the root directory path with a placeholder.
-    """
-
     def filter(self, record):
         # get the root directory path
         root_dir = Config.ROOT_DIR
@@ -46,16 +32,6 @@ class PathFilter(logging.Filter):
 
 
 def setup_logger(name=__name__, log_file=Config.LOG_PATH):
-    """
-    set up and return a logger instance.
-
-    arguments:
-        name: name of the logger (typically __name__)
-        log_file: path to the log file
-
-    returns:
-        logging.Logger: configured logger instance
-    """
     # create logs directory if it doesn't exist
     log_dir = os.path.dirname(log_file)
     if log_dir and not os.path.exists(log_dir):

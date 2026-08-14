@@ -1,10 +1,3 @@
-"""
-eda.py - Contains functions for exploatory data analysis on the provided dataset.
-Generate text summaries, statistical insights, and visualizations
-
-Purpose of this module: To understand the raw data before preprocessing 
-"""
-
 # IMPROTS
 import pandas as pd
 import numpy as np
@@ -23,14 +16,6 @@ from src.evaluation.visualizer import (
 logger = setup_logger(__name__)
 
 def EDA(df: pd.DataFrame) -> dict:
-    """
-    Objective: performing EDA on raw dataset
-    Arguments:
-        df: pd.DataFrame -> This is the raw dataset loaded from the loader.py
-    
-    Returns? A dictornary that contains EDA findings and insights. 
-    """
-
     logger.info("COMMENCING EDA ANALYSIS")
 
     findings = {}
@@ -151,16 +136,6 @@ def EDA(df: pd.DataFrame) -> dict:
     return findings
 
 def get_summart_stats(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    This function returns the summary of th stats Dataframe for all numeric columns, tempeorary conversion included
-
-    Argumnets:
-        df: pd.DataFram -> Raw Dataframe
-
-    Returns?
-        pd.DataFram: Summary
-    """
-
     temp_df = df.copy()
 
     if 'TotalCharges' in temp_df.columns:

@@ -1,15 +1,3 @@
-"""
-trainer.py - orchestrates the training process for the custom model.
-
-this module handles:
-- training the custom logistic regression model
-- generating predictions on test data
-- computing evaluation metrics
-- saving the trained model to disk
-
-purpose: to have a single place that trains the model and collects results.
-"""
-
 # IMPORTS
 import joblib
 from sklearn.linear_model import LogisticRegression
@@ -24,29 +12,7 @@ logger = setup_logger(__name__)
 
 
 def train_custom_model(X_train, X_test, y_train, y_test):
-    """
-    train the custom logistic regression model and evaluate it.
-
-    this function:
-    1. initializes the custom model with parameters from config
-    2. fits the model on training data
-    3. makes predictions on test data
-    4. computes evaluation metrics
-    5. saves the trained model to disk
-    6. returns metrics and the trained model
-
-    arguments:
-        X_train: training features
-        X_test: test features
-        y_train: training labels
-        y_test: test labels
-
-    returns:
-        tuple: (trained_model, metrics_dictionary)
-    """
-    logger.info("=" * 50)
     logger.info("starting custom model training")
-    logger.info("=" * 50)
 
 
     # [1] initialize the custom model with parameters from config
@@ -113,28 +79,6 @@ def train_custom_model(X_train, X_test, y_train, y_test):
 
 
 def train_sklearn_model(X_train, X_test, y_train, y_test):
-    """
-    train a scikit-learn logistic regression model for benchmarking.
-
-    this function:
-    1. initializes a sklearn logistic regression model
-    2. fits it on training data
-    3. makes predictions on test data
-    4. computes evaluation metrics
-    5. saves the model to disk
-    6. returns metrics
-
-    this is separate from the custom model for fair comparison.
-
-    arguments:
-        X_train: training features
-        X_test: test features
-        y_train: training labels
-        y_test: test labels
-
-    returns:
-        dict: metrics dictionary
-    """
     logger.info("=" * 50)
     logger.info("training scikit-learn model for benchmarking")
     logger.info("=" * 50)

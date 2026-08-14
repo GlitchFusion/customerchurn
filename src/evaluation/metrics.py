@@ -1,16 +1,3 @@
-"""
-metrics.py - contains evaluation metrics for model performance.
-
-this module provides functions to compute:
-- accuracy
-- precision
-- recall
-- f1 score
-- roc-auc
-
-purpose: to have a single place for all evaluation metrics.
-"""
-
 # IMPORTS
 import numpy as np
 from sklearn.metrics import (
@@ -29,24 +16,6 @@ logger = setup_logger(__name__)
 
 
 def compute_all_metrics(y_true, y_pred, y_pred_proba):
-    """
-    compute all evaluation metrics at once.
-
-    this function calculates:
-    - accuracy: percentage of correct predictions
-    - precision: how many predicted positives are actually positive
-    - recall: how many actual positives were captured
-    - f1 score: harmonic mean of precision and recall
-    - roc-auc: area under the roc curve
-
-    arguments:
-        y_true: true labels (0 or 1)
-        y_pred: predicted labels (0 or 1)
-        y_pred_proba: predicted probabilities (between 0 and 1)
-
-    returns:
-        dict: dictionary containing all metrics
-    """
     # calculate each metric
     accuracy = accuracy_score(y_true, y_pred)
     precision = precision_score(y_true, y_pred, zero_division=0)
@@ -81,13 +50,6 @@ def compute_all_metrics(y_true, y_pred, y_pred_proba):
 
 
 def print_metrics_comparison(custom_metrics, sklearn_metrics):
-    """
-    print a side-by-side comparison of custom vs sklearn metrics.
-
-    arguments:
-        custom_metrics: metrics dictionary from custom model
-        sklearn_metrics: metrics dictionary from sklearn model
-    """
     # only compare the main metrics (not confusion matrix values)
     metric_names = ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']
 

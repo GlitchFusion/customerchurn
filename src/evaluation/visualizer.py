@@ -1,27 +1,10 @@
-"""
-visualizer.py - centralized plotting hub for all visualizations.
-
-contains every plot type needed for the project:
-- eda (distributions, correlations, churn rates)
-- training diagnostics (loss curve)
-- model evaluation (confusion matrix, roc, pr curves)
-- model interpretation (feature importance, threshold tuning)
-
-purpose: to provide reusable plotting functions that save
-to reports/figures/ or display interactively.
-"""
-
 # IMPORTS
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
-from sklearn.metrics import (
-    roc_curve, auc, confusion_matrix,
-    precision_recall_curve, precision_score,
-    recall_score, f1_score
-)
+from sklearn.metrics import (roc_curve, auc, confusion_matrix, precision_recall_curve, precision_score, recall_score, f1_score)
 
 # LOCAL IMPORTS
 from config.configs import Config
@@ -32,41 +15,23 @@ sns.set_palette("Set2")
 
 
 def _ensure_fig_dir():
-    """ensure the figures directory exists."""
     os.makedirs(Config.FIGURES_DIR, exist_ok=True)
 
 
 def _save_or_show(fig, filename=None, save=True):
-    """
-    helper to save to reports/figures/ or display.
-
-    arguments:
-        fig: matplotlib figure object
-        filename: name of the file (without extension)
-        save: if true, save to disk; if false, display.
-    """
-    if save and filename:
+   if save and filename:
         _ensure_fig_dir()
         filepath = os.path.join(Config.FIGURES_DIR, f"{filename}.png")
         fig.savefig(filepath, dpi=300, bbox_inches='tight')
         print(f"saved: {filepath}")
-    else:
+   else:
         plt.show()
 
 
-# ----------------------------------------------------------------------
 # exploratory data analysis (eda) plots
-# ----------------------------------------------------------------------
+
 
 def plot_target_distribution(df, target_col='Churn', save=True):
-    """
-    bar chart of target variable (churn vs non-churn).
-
-    arguments:
-        df: dataset
-        target_col: name of target column
-        save: save to disk or display
-    """
     fig, ax = plt.subplots(figsize=(6, 4))
     df[target_col].value_counts().plot(kind='bar', ax=ax, color=['#1f77b4', '#ff7f0e'])
     ax.set_title('target variable distribution', fontsize=14)
@@ -81,15 +46,6 @@ def plot_target_distribution(df, target_col='Churn', save=True):
 
 
 def plot_categorical_churn(df, cat_col, target_col='Churn', save=True):
-    """
-    stacked bar chart showing churn rate by a categorical feature.
-
-    arguments:
-        df: dataset
-        cat_col: categorical column name
-        target_col: target column name
-        save: save to disk or display
-    """
     fig, ax = plt.subplots(figsize=(10, 5))
     churn_rate = pd.crosstab(df[cat_col], df[target_col], normalize='index') * 100
     churn_rate.plot(kind='bar', stacked=True, ax=ax, color=['#1f77b4', '#ff7f0e'])
@@ -102,14 +58,6 @@ def plot_categorical_churn(df, cat_col, target_col='Churn', save=True):
 
 
 def plot_numerical_distribution(df, num_col, save=True):
-    """
-    histogram + kde for a numerical feature.
-
-    arguments:
-        df: dataset
-        num_col: numerical column name
-        save: save to disk or display
-    """
     fig, ax = plt.subplots(figsize=(8, 4))
     sns.histplot(df[num_col], kde=True, ax=ax, color='#2ca02c')
     ax.set_title(f'distribution of {num_col}', fontsize=14)
@@ -118,14 +66,6 @@ def plot_numerical_distribution(df, num_col, save=True):
 
 
 def plot_correlation_matrix(df, numeric_cols=None, save=True):
-    """
-    heatmap of feature correlations.
-
-    arguments:
-        df: dataset (numeric columns only)
-        numeric_cols: list of numeric columns (optional)
-        save: save to disk or display
-    """
     if numeric_cols is None:
         numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
     if len(numeric_cols) < 2:
@@ -142,15 +82,6 @@ def plot_correlation_matrix(df, numeric_cols=None, save=True):
 
 
 def plot_churn_boxplot(df, num_col, target_col='Churn', save=True):
-    """
-    box plot of a numerical feature segmented by churn.
-
-    arguments:
-        df: dataset
-        num_col: numerical column name
-        target_col: target column name
-        save: save to disk or display
-    """
     fig, ax = plt.subplots(figsize=(8, 5))
     sns.boxplot(x=target_col, y=num_col, data=df, ax=ax,
                 palette=['#1f77b4', '#ff7f0e'])
@@ -158,18 +89,11 @@ def plot_churn_boxplot(df, num_col, target_col='Churn', save=True):
     _save_or_show(fig, f'boxplot_{num_col}_by_churn', save)
 
 
-# ----------------------------------------------------------------------
+
 # training diagnostics
-# ----------------------------------------------------------------------
+
 
 def plot_loss_curve(loss_history, save=True):
-    """
-    plot log-loss over training epochs.
-
-    arguments:
-        loss_history: list of loss values per epoch
-        save: save to disk or display
-    """
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.plot(loss_history, color='#d62728', linewidth=2)
     ax.set_title('loss over epochs (training)', fontsize=14)
@@ -179,23 +103,11 @@ def plot_loss_curve(loss_history, save=True):
     _save_or_show(fig, 'loss_curve', save)
 
 
-# ----------------------------------------------------------------------
+
 # model evaluation plots
-# ----------------------------------------------------------------------
+
 
 def plot_confusion_matrix(y_true, y_pred, labels=None, save=True):
-    """
-    confusion matrix with annotations.
-
-    labels are removed from the plot and will be shown on the webpage.
-    this gives cleaner visualizations without clutter.
-
-    arguments:
-        y_true: true labels
-        y_pred: predicted labels
-        labels: not used - kept for compatibility (labels shown on webpage)
-        save: save to disk or display
-    """
     cm = confusion_matrix(y_true, y_pred)
     fig, ax = plt.subplots(figsize=(6, 5))
     
@@ -211,18 +123,6 @@ def plot_confusion_matrix(y_true, y_pred, labels=None, save=True):
 
 
 def plot_roc_curve(y_true, y_proba, model_name='custom model', save=True):
-    """
-    roc curve with auc score.
-
-    arguments:
-        y_true: true labels
-        y_proba: predicted probabilities
-        model_name: name for legend
-        save: save to disk or display
-
-    returns:
-        float: auc score
-    """
     fpr, tpr, _ = roc_curve(y_true, y_proba)
     roc_auc = auc(fpr, tpr)
 
@@ -241,15 +141,6 @@ def plot_roc_curve(y_true, y_proba, model_name='custom model', save=True):
 
 
 def plot_precision_recall_curve(y_true, y_proba, model_name='custom model', save=True):
-    """
-    precision-recall curve (useful for imbalanced data).
-
-    arguments:
-        y_true: true labels
-        y_proba: predicted probabilities
-        model_name: name for legend
-        save: save to disk or display
-    """
     precision, recall, _ = precision_recall_curve(y_true, y_proba)
 
     fig, ax = plt.subplots(figsize=(7, 6))
@@ -265,15 +156,6 @@ def plot_precision_recall_curve(y_true, y_proba, model_name='custom model', save
 
 
 def plot_roc_comparison(y_true, custom_proba, sklearn_proba, save=True):
-    """
-    compare roc curves of custom vs sklearn model on one plot.
-
-    arguments:
-        y_true: true labels
-        custom_proba: custom model probabilities
-        sklearn_proba: sklearn model probabilities
-        save: save to disk or display
-    """
     fig, ax = plt.subplots(figsize=(8, 6))
 
     for proba, name in [(custom_proba, 'custom model'), (sklearn_proba, 'scikit-learn')]:
@@ -292,21 +174,11 @@ def plot_roc_comparison(y_true, custom_proba, sklearn_proba, save=True):
     _save_or_show(fig, 'roc_comparison', save)
 
 
-# ----------------------------------------------------------------------
+
 # model interpretation plots
-# ----------------------------------------------------------------------
+
 
 def plot_feature_importance(weights, feature_names, top_n=20, save=True):
-    """
-    bar chart of logistic regression coefficients.
-    positive = increases churn risk, negative = decreases churn risk.
-
-    arguments:
-        weights: model coefficients/weights
-        feature_names: names of features
-        top_n: number of top features to display
-        save: save to disk or display
-    """
     coef_df = pd.DataFrame({'feature': feature_names, 'weight': weights})
     coef_df['abs_weight'] = coef_df['weight'].abs()
     coef_df = coef_df.sort_values('abs_weight', ascending=False).head(top_n)
@@ -324,15 +196,6 @@ def plot_feature_importance(weights, feature_names, top_n=20, save=True):
 
 
 def plot_threshold_analysis(y_true, y_proba, save=True):
-    """
-    plot precision, recall, and f1 across different decision thresholds.
-    helps choose the optimal threshold for business needs.
-
-    arguments:
-        y_true: true labels
-        y_proba: predicted probabilities
-        save: save to disk or display
-    """
     thresholds = np.arange(0.0, 1.0, 0.02)
     precisions = []
     recalls = []
@@ -356,26 +219,12 @@ def plot_threshold_analysis(y_true, y_proba, save=True):
     _save_or_show(fig, 'threshold_analysis', save)
 
 
-# ----------------------------------------------------------------------
+
 # batch generator – run everything at once!
-# ----------------------------------------------------------------------
 
-def generate_all_plots(df, target_col, custom_model, sklearn_model,
-                       X_test, y_test, feature_names, loss_history):
-    """
-    master function that generates every plot in one call.
-    call this from main.py to produce all figures for your report.
 
-    arguments:
-        df: raw dataset
-        target_col: target column name
-        custom_model: fitted custom logistic regression model
-        sklearn_model: fitted sklearn model
-        X_test: test features
-        y_test: test labels
-        feature_names: names of features
-        loss_history: loss history from training
-    """
+def generate_all_plots(df, target_col, custom_model, sklearn_model, X_test, y_test, feature_names, loss_history):
+
     print("generating all plots...")
 
     # eda plots

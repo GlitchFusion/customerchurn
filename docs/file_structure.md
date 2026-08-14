@@ -30,9 +30,6 @@ churn_prediction/
 │       └── io_helpers.py                # Save/load models, preprocessors (pickle/joblib)
 │
 ├── tests/                               # Unit & integration tests
-│   ├── test_preprocessor.py
-│   ├── test_custom_logistic.py
-│   └── test_integration.py
 │
 ├── deployment/                          # Web service for predictions
 │   ├── app.py                           # Flask/FastAPI entry point
@@ -45,15 +42,9 @@ churn_prediction/
 │   ├── processed/
 │
 ├── models/                              # Persisted models + preprocessors
-│   ├── custom_model.pkl
-│   ├── sklearn_model.pkl
-│   └── preprocessor.pkl                 # Fit encoders/scalers for deployment
 │
 ├── reports/                             # Analytical outputs
 │   ├── figures/
-│   │   ├── roc_curve.png
-│   │   ├── confusion_matrix.png
-│   │   └── feature_importance.png
 │   └── final_report.md                  # Your written analysis
 │
 └── logs/                                # Runtime logs

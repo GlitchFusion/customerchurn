@@ -1,9 +1,3 @@
-"""
-loader.py - loads the raw data from disk.
-
-purpose: to provide a clean function for loading the telco customer churn dataset.
-"""
-
 # IMPORTS
 import pandas as pd
 
@@ -15,19 +9,6 @@ logger = setup_logger(__name__)
 
 
 def load_raw_data():
-    """
-    load the raw telco customer churn dataset from the configured path.
-
-    this function reads the csv file and returns a pandas dataframe.
-    if the file is not found or there is an error, it logs the issue and re-raises.
-
-    returns:
-        pd.DataFrame: the raw dataset
-
-    raises:
-        FileNotFoundError: if the file does not exist at the configured path
-        Exception: for any other loading errors
-    """
     logger.info("loading raw data from: %s", Config.RAW_DATA_PATH)
 
     try:

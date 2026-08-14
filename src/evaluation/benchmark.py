@@ -1,15 +1,3 @@
-"""
-benchmark.py - compares custom logistic regression with scikit-learn.
-
-this module:
-1. trains a scikit-learn logistic regression model
-2. computes its evaluation metrics
-3. prints a side-by-side comparison with the custom model
-4. saves the sklearn model to disk
-
-purpose: to validate the custom implementation against a trusted library.
-"""
-
 # IMPORTS
 import joblib
 
@@ -23,26 +11,6 @@ logger = setup_logger(__name__)
 
 
 def run_benchmark(X_train, X_test, y_train, y_test, custom_metrics):
-    """
-    run the full benchmarking process.
-
-    this function:
-    1. trains a sklearn model on the same data
-    2. computes its metrics
-    3. saves the sklearn model
-    4. prints comparison with custom model
-    5. returns the sklearn metrics
-
-    arguments:
-        X_train: training features
-        X_test: test features
-        y_train: training labels
-        y_test: test labels
-        custom_metrics: metrics dictionary from the custom model
-
-    returns:
-        dict: sklearn metrics dictionary
-    """
     logger.info("=" * 50)
     logger.info("starting benchmark comparison")
     logger.info("=" * 50)
@@ -92,16 +60,6 @@ def run_benchmark(X_train, X_test, y_train, y_test, custom_metrics):
 
 
 def compare_models(custom_metrics, sklearn_metrics):
-    """
-    simple function to compare two metrics dictionaries.
-
-    arguments:
-        custom_metrics: metrics from custom model
-        sklearn_metrics: metrics from sklearn model
-
-    returns:
-        dict: comparison results with differences
-    """
     comparison = {}
 
     metric_names = ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']
