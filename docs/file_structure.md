@@ -1,51 +1,48 @@
 churn_prediction/
 │
-├── .env                                 # Environment variables (optional)
 ├── .gitignore
-├── README.md                            # Setup & run instructions
-├── requirements.txt                     # All dependencies
-├── main.py                              # Entry point to run everything
+├── README.md                           
+├── requirements.txt                     
+├── main.py                             
 │
-├── config/                              # Configuration layer
-│   └── configs.py                       # Centralised params (paths, hyperparams, seeds)
+├── config/                              
+│   └── configs.py                       
 │
-├── src/                                 # Core source code (modular)
+├── src/                                 
 │   ├── data/
-│   │   ├── loader.py                    # Raw data loading
-│   │   └── preprocessor.py              # Cleaning, encoding, scaling, feature creation
+│   │   ├── loader.py                    
+│   │   └── preprocessor.py              
 │   │
 │   ├── models/
-│   │   └── custom_logistic.py           # NumPy LogisticRegression class
+│   │   └── custom_logistic.py           
 │   │
 │   ├── training/
-│   │   └── trainer.py                   # Orchestrates training (fit, save model)
+│   │   └── trainer.py                   
 │   │
 │   ├── evaluation/
-│   │   ├── metrics.py                   # Accuracy, Precision, Recall, F1, AUC
-│   │   ├── visualizer.py                # ROC, Confusion Matrix, Feature Importance plots, and other plots
-│   │   └── benchmark.py                 # Compares custom vs. sklearn model
+│   │   ├── metrics.py                   
+│   │   ├── visualizer.py                
+│   │   └── benchmark.py                 
 │   │
 │   └── utils/
-│       ├── logger.py                    # Sets up logging (to file and console)
-│       └── io_helpers.py                # Save/load models, preprocessors (pickle/joblib)
+│       ├── logger.py                    
+│       └── io_helpers.py                
 │
-├── tests/                               # Unit & integration tests
+├── tests/                               
 │
-├── deployment/                          # Web service for predictions
-│   ├── app.py                           # Flask/FastAPI entry point
-│   ├── static/                          # (if you add a CSS/JS frontend)
-│   └── templates/                       # (if using Flask HTML templates)
+├── deployment/                          
+│   ├── app.py                           
+│   ├── static/                          
+│   └── templates/                       
 │
-├── data/                                # All datasets
+├── data/                                
 │   ├── raw/
-│   │   └── Telco-Customer-Churn-Data.csv.csv              # Place your original file here
-│   ├── processed/
+│   │   └── Telco-Customer-Churn-Data.csv.csv              
 │
-├── models/                              # Persisted models + preprocessors
+├── models/                              
 │
-├── reports/                             # Analytical outputs
+├── reports/                             
 │   ├── figures/
-│   └── final_report.md                  # Your written analysis
 │
-└── logs/                                # Runtime logs
+└── logs/                               
     └── training.log

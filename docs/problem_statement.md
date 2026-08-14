@@ -1,4 +1,4 @@
-# Option 2: Custom Logistic Regression for Churn Prediction
+# Custom Logistic Regression for Churn Prediction
 
 ## Objective
 
