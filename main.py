@@ -1,18 +1,3 @@
-"""
-main.py - entry point for the churn prediction pipeline.
-
-this script orchestrates the entire workflow:
-1. loads raw data
-2. runs exploratory data analysis
-3. preprocesses the data
-4. trains the custom logistic regression model
-5. benchmarks against scikit-learn
-6. generates all visualizations
-7. saves artifacts for deployment
-
-purpose: to run everything from start to finish with one command.
-"""
-
 # IMPORTS
 import pandas as pd
 
@@ -34,24 +19,19 @@ logger = setup_logger(__name__)
 
 
 def main():
-    """
-    run the complete churn prediction pipeline.
-
-    this function executes all steps in order and logs progress.
-    """
     logger.info("\n")
     logger.info("starting churn prediction pipeline")
     logger.info("\n")
 
   
-    # [step 1] load raw data
-    logger.info("[step 1] loading raw data...")
+    # load raw data
+    logger.info("loading raw data...")
     df = load_raw_data()
     logger.info("loaded %d rows and %d columns", df.shape[0], df.shape[1])
 
   
-    # [step 2] run exploratory data analysis
-    logger.info("[step 2] running exploratory data analysis...")
+    # run exploratory data analysis
+    logger.info("running exploratory data analysis...")
     eda_findings = EDA(df)
     logger.info("eda complete! yay!")
     logger.info("key findings: churn percentage = %.2f%%", eda_findings.get('churn_percentage', 0))
@@ -61,8 +41,8 @@ def main():
     logger.info("summary statistics:\n%s", summary_stats.to_string())
 
   
-    # [step 3] preprocess the data
-    logger.info("[step 3] preprocessing data...")
+    # preprocess the data
+    logger.info("preprocessing data...")
     preprocessor = Preprocessor()
     X_train, X_test, y_train, y_test = preprocessor.fit_transform(df)
 
@@ -76,8 +56,8 @@ def main():
     logger.info("preprocessor saved successfully!")
 
   
-    # [step 4] train custom model
-    logger.info("[step 4] training custom model...")
+    # train custom model
+    logger.info("training custom model...")
     custom_model, custom_metrics = train_custom_model(X_train, X_test, y_train, y_test)
 
     logger.info("custom model training complete! success!")
@@ -89,13 +69,13 @@ def main():
     logger.info("    roc-auc: %.4f", custom_metrics['roc_auc'])
 
   
-    # [step 5] benchmark against scikit-learn
-    logger.info("[step 5] running benchmark comparison...")
+    # benchmark against scikit-learn
+    logger.info("running benchmark comparison...")
     sklearn_metrics = run_benchmark(X_train, X_test, y_train, y_test, custom_metrics)
 
   
-    # [step 6] generate all visualizations
-    logger.info("[step 6] generating all visualizations...")
+    # generate all visualizations
+    logger.info("generating all visualizations...")
     
     # need sklearn model for comparison plot
     from src.utils.io_helpers import load_model
@@ -115,7 +95,7 @@ def main():
     logger.info("all visualizations generated! yay!")
 
   
-    # [step 7] final summary
+    # final summary
     logger.info("\n")
     logger.info("pipeline complete! success!")
     logger.info("\n")

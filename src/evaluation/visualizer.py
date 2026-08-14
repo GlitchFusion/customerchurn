@@ -29,8 +29,6 @@ def _save_or_show(fig, filename=None, save=True):
 
 
 # exploratory data analysis (eda) plots
-
-
 def plot_target_distribution(df, target_col='Churn', save=True):
     fig, ax = plt.subplots(figsize=(6, 4))
     df[target_col].value_counts().plot(kind='bar', ax=ax, color=['#1f77b4', '#ff7f0e'])
@@ -176,8 +174,6 @@ def plot_roc_comparison(y_true, custom_proba, sklearn_proba, save=True):
 
 
 # model interpretation plots
-
-
 def plot_feature_importance(weights, feature_names, top_n=20, save=True):
     coef_df = pd.DataFrame({'feature': feature_names, 'weight': weights})
     coef_df['abs_weight'] = coef_df['weight'].abs()
@@ -220,9 +216,7 @@ def plot_threshold_analysis(y_true, y_proba, save=True):
 
 
 
-# batch generator – run everything at once!
-
-
+# batch generator – running everything at once!
 def generate_all_plots(df, target_col, custom_model, sklearn_model, X_test, y_test, feature_names, loss_history):
 
     print("generating all plots...")
