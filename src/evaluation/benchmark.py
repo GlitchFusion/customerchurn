@@ -11,9 +11,9 @@ logger = setup_logger(__name__)
 
 
 def run_benchmark(X_train, X_test, y_train, y_test, custom_metrics):
-    logger.info("=" * 50)
+
     logger.info("starting benchmark comparison")
-    logger.info("=" * 50)
+
 
     # training sklearn model using the trainer function
     logger.info("[1] training scikit-learn model...")
@@ -52,9 +52,9 @@ def run_benchmark(X_train, X_test, y_train, y_test, custom_metrics):
     else:
         logger.info("    both models have the same roc-auc (%.4f)", custom_auc)
 
-    logger.info("=" * 50)
+
     logger.info("benchmark complete! success!")
-    logger.info("=" * 50)
+
 
     return sklearn_metrics
 

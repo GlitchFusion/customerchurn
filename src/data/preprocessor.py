@@ -30,7 +30,7 @@ class Preprocessor:
         # dropping customer id column
         if Config.ID_COL in df.columns:
             df = df.drop(columns=[Config.ID_COL])
-            logger.info("[1] dropped '%s' column", Config.ID_COL)
+            logger.info("dropped '%s' column", Config.ID_COL)
 
 
         # fixing totalcharges
@@ -40,7 +40,7 @@ class Preprocessor:
             # fill nans with median very few missing values
             median_val = df['TotalCharges'].median()
             df['TotalCharges'] = df['TotalCharges'].fillna(median_val)
-            logger.info("[2] fixed totalcharges: filled missing with median (%.2f)", median_val)
+            logger.info("fixed totalcharges: filled missing with median (%.2f)", median_val)
 
 
         # creating new features
@@ -50,12 +50,12 @@ class Preprocessor:
             bins=Config.TENURE_BINS,
             labels=Config.TENURE_LABELS
         )
-        logger.info("[3a] created tenure_group with bins: %s", Config.TENURE_LABELS)
+        logger.info("created tenure_group with bins: %s", Config.TENURE_LABELS)
 
         # avgmonthlyspend totalcharges tenure 1
         # adding 1 to avoid division by zero for tenure
         df['avg_monthly_spend'] = df['TotalCharges'] / (df['tenure'] + 1)
-        logger.info("[3b] created avg_monthly_spend feature")
+        logger.info("created avg_monthly_spend feature")
 
 
         # separating features and target
@@ -66,7 +66,7 @@ class Preprocessor:
 
         X = df.drop(columns=[target])
         y = df[target].apply(lambda x: 1 if x == 'Yes' else 0).values
-        logger.info("[4] target distribution: %d churned, %d not churned",
+        logger.info("target distribution: %d churned, %d not churned",
                    sum(y), len(y) - sum(y))
 
 
@@ -94,8 +94,8 @@ class Preprocessor:
         numeric_features = [col for col in numeric_features if col in X.columns]
         categorical_features = [col for col in categorical_features if col in X.columns]
 
-        logger.info("[5] numeric features: %s", numeric_features)
-        logger.info("[5] categorical features: %s", categorical_features)
+        logger.info("numeric features: %s", numeric_features)
+        logger.info("categorical features: %s", categorical_features)
 
 
         # building columntransformer pipeline
@@ -129,7 +129,7 @@ class Preprocessor:
         cat_feature_names = cat_encoder.get_feature_names_out(categorical_features).tolist()
 
         self.feature_names = num_feature_names + cat_feature_names
-        logger.info("[6] total features after encoding: %d", len(self.feature_names))
+        logger.info("total features after encoding: %d", len(self.feature_names))
 
 
         # traintest split
@@ -141,10 +141,10 @@ class Preprocessor:
             stratify=y  # preserve class distribution
         )
 
-        logger.info("[7] train/test split: train %s, test %s",
+        logger.info("train/test split: train %s, test %s",
                    self.X_train.shape, self.X_test.shape)
 
-        logger.info("✅ preprocessing complete!")
+        logger.info("preprocessing complete!")
 
         return self.X_train, self.X_test, self.y_train, self.y_test
 

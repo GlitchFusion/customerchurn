@@ -22,7 +22,7 @@ def EDA(df: pd.DataFrame) -> dict:
 
 
     # getting basic information
-    logger.info("[1] Basic information about the dataset")
+    logger.info("Basic information about the dataset")
     logger.info(f"Dataset shape: {df.shape}\nRows: {df.shape[0]}\nColumns: {df.shape[1]}")
     logger.info(f"Data Types: \n{df.dtypes.to_string()}")
 
@@ -37,15 +37,15 @@ def EDA(df: pd.DataFrame) -> dict:
     missing_values_df = missing_values_df[missing_values_df["Missing count"] > 0]
 
     if not missing_values_df.empty:
-        logger.info(f"[2] missing values\n {missing_values_df.to_string()}")
+        logger.info(f"missing values\n {missing_values_df.to_string()}")
         findings["missing_values"] = missing_values_df.dict()
     else:
-        logger.info("[2] No missing values found!")
+        logger.info("No missing values found!")
         findings["missing_values"] = {}
 
 
     # analyzing target variable distribution
-    logger.info("[3] Target variable analysis")
+    logger.info("Target variable analysis")
     target = Config.TARGET_COL
     if target in df.columns:
         churn_count = df[target].value_counts()
@@ -60,7 +60,7 @@ def EDA(df: pd.DataFrame) -> dict:
 
 
     # analyzing categorical features
-    logger.info("[4] Categorical Feature Analysis")
+    logger.info("Categorical Feature Analysis")
     category_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
 
     # excluding target and id columns
@@ -78,7 +78,7 @@ def EDA(df: pd.DataFrame) -> dict:
 
 
     # analyzing numeric features
-    logger.info("[5] Numeric Feature Analysis")
+    logger.info("Numeric Feature Analysis")
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
     numeric_cols = [c for c in numeric_cols if c not in [Config.TARGET_COL]]
 
@@ -94,7 +94,7 @@ def EDA(df: pd.DataFrame) -> dict:
 
 
     # analyzing correlations
-    logger.info("[6] Correlation Matrix") # only numerical features included
+    logger.info("Correlation Matrix") # only numerical features included
 
     # converting totalcharges to numrical value temporary
     
@@ -114,7 +114,7 @@ def EDA(df: pd.DataFrame) -> dict:
 
 
     # additional insight
-    logger.info("[7] Additional insight")
+    logger.info("Additional insight")
     # checking for constant
     const_cols = [c for c in df.columns if df[c].nunique() == 1]
     if const_cols:
