@@ -62,4 +62,4 @@ class Config:
 
     # setting deployment parameters
     API_HOST: str = "0.0.0.0"
-    API_PORT: int = 5000
+    API_PORT: int = int(os.environ.get("PORT", 5000))

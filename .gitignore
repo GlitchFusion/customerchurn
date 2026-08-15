@@ -12,11 +12,6 @@ env/
 logs/
 *.log
 
-
-models/
-*.pkl
-
-
 data/raw/
 
 .vscode/
@@ -24,5 +19,3 @@ data/raw/
 *.swp
 
 .env
-
-reports/figures/
