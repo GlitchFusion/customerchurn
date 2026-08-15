@@ -1,7 +1,7 @@
-# IMPORTS
+# importing modules
 import pandas as pd
 
-# LOCAL IMPORTS
+# importing local modules
 from config.configs import Config
 from src.utils.logger import setup_logger
 

@@ -1,11 +1,11 @@
-# IMPORTS
+# importing modules
 import os
 import sys
 import json
 import pandas as pd
 from flask import Flask, render_template, request, jsonify, send_from_directory
 
-# adding parent path to sys.path
+# adding parent path to syspath
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config.configs import Config
@@ -18,7 +18,7 @@ logger = setup_logger(__name__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'churn-prediction-temp-key'
 
-# load artifacts at startup
+# loading artifacts at startup
 print("loading artifacts...")
 preprocessor_data = load_preprocessor(Config.PREPROCESSOR_PATH)
 custom_model = load_model(Config.CUSTOM_MODEL_PATH)
@@ -26,12 +26,12 @@ custom_model = load_model(Config.CUSTOM_MODEL_PATH)
 if preprocessor_data is None or custom_model is None:
     print("error: could not load preprocessor or model. please run main.py first.")
 
-# get preprocessor pipeline from loaded data
+# getting preprocessor pipeline from loaded data
 preprocessor = preprocessor_data['pipeline'] if preprocessor_data else None
 feature_names = preprocessor_data['feature_names'] if preprocessor_data else None
 
 
-# routes
+# defining routes
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -43,7 +43,7 @@ def predict():
         return jsonify({'error': 'model or preprocessor not loaded. run main.py first.'}), 500
 
     try:
-        # extract form data
+        # extracting form data
         input_data = {
             'gender': request.form.get('gender'),
             'SeniorCitizen': int(request.form.get('SeniorCitizen', 0)),
@@ -66,10 +66,10 @@ def predict():
             'TotalCharges': float(request.form.get('TotalCharges', 0))
         }
 
-        # convert to dataframe
+        # converting to dataframe
         input_df = pd.DataFrame([input_data])
 
-        # create engineered features (same as preprocessor.py)
+        # creating engineered features same as preprocessorpy
         input_df['tenure_group'] = pd.cut(
             input_df['tenure'],
             bins=Config.TENURE_BINS,
@@ -80,7 +80,7 @@ def predict():
         # transform using preprocessor
         X_processed = preprocessor.transform(input_df)
 
-        # predict
+        # predicting
         probability = custom_model.predict_proba(X_processed)[0]
         prediction = 1 if probability >= 0.5 else 0
 
@@ -131,7 +131,6 @@ def plots():
 
 @app.route('/plots/figures/<filename>')
 def serve_figure(filename):
-    """serve figure images from reports/figures/."""
     return send_from_directory(Config.FIGURES_DIR, filename)
 
 
@@ -172,9 +171,7 @@ def get_metrics_comparison():
     return jsonify(result)
 
 
-# ---------------------------------------------------------------------
-# run the app
-# ---------------------------------------------------------------------
+# running the app
 
 if __name__ == '__main__':
     app.run(host=Config.API_HOST, port=Config.API_PORT, debug=True)

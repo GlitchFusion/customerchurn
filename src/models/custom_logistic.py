@@ -1,7 +1,7 @@
-# IMPORTS
+# importing modules
 import numpy as np
 
-# LOCAL IMPORTS
+# importing local modules
 from config.configs import Config
 from src.utils.logger import setup_logger
 
@@ -27,7 +27,7 @@ class CustomLogisticRegression:
         return 1 / (1 + np.exp(-z_clipped))
 
     def _compute_loss(self, y, y_pred, m):
-        # compute sample weights for class imbalance
+        # computing sample weights for class imbalance
         if self.class_weight == 'balanced':
             unique, counts = np.unique(y, return_counts=True)
             weight_map = {cls: m / (len(unique) * count) for cls, count in zip(unique, counts)}
@@ -37,12 +37,12 @@ class CustomLogisticRegression:
         else:
             sample_weights = np.ones(m)
 
-        # weighted cross-entropy loss
-        eps = 1e-9  # small epsilon to avoid log(0)
+        # weighted crossentropy loss
+        eps = 1e-9  # small epsilon to avoid log0
         loss = -np.mean(sample_weights * (y * np.log(y_pred + eps) +
                                           (1 - y) * np.log(1 - y_pred + eps)))
 
-        # add regularization
+        # adding regularization
         if self.reg == 'l2':
             loss += (self.reg_lambda / (2 * m)) * np.sum(self.weights ** 2)
         elif self.reg == 'l1':
@@ -60,11 +60,11 @@ class CustomLogisticRegression:
                    m, n, self.epochs)
 
         for epoch in range(self.epochs):
-            # forward pass: compute predictions
+            # forward pass compute predictions
             linear_model = np.dot(X, self.weights) + self.bias
             y_pred = self._sigmoid(linear_model)
 
-            # compute sample weights for gradient calculation
+            # computing sample weights for gradient calculation
             if self.class_weight == 'balanced':
                 unique, counts = np.unique(y, return_counts=True)
                 weight_map = {cls: m / (len(unique) * count) for cls, count in zip(unique, counts)}
@@ -74,11 +74,11 @@ class CustomLogisticRegression:
             else:
                 sample_weights = np.ones(m)
 
-            # compute gradients with sample weights
+            # computing gradients with sample weights
             dw = (1 / m) * np.dot(X.T, sample_weights * (y_pred - y))
             db = (1 / m) * np.sum(sample_weights * (y_pred - y))
 
-            # add regularization gradients
+            # adding regularization gradients
             if self.reg == 'l2':
                 dw += (self.reg_lambda / m) * self.weights
             elif self.reg == 'l1':
@@ -88,11 +88,11 @@ class CustomLogisticRegression:
             self.weights -= self.learning_rate * dw
             self.bias -= self.learning_rate * db
 
-            # compute and store loss
+            # computing and store loss
             loss = self._compute_loss(y, y_pred, m)
             self.loss_history.append(loss)
 
-            # log progress every 100 epochs
+            # logging progress every 100 epochs
             if epoch % 100 == 0:
                 logger.info("epoch %d/%d - loss: %.6f", epoch, self.epochs, loss)
 

@@ -1,4 +1,4 @@
-# IMPORTS
+# importing modules
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -7,7 +7,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 import joblib
 
-# LOCAL IMPORTS
+# importing local modules
 from config.configs import Config
 from src.utils.logger import setup_logger
 
@@ -27,24 +27,24 @@ class Preprocessor:
         logger.info("starting preprocessing pipeline...")
 
 
-        # [1] drop customer id column
+        # dropping customer id column
         if Config.ID_COL in df.columns:
             df = df.drop(columns=[Config.ID_COL])
             logger.info("[1] dropped '%s' column", Config.ID_COL)
 
 
-        # [2] fix totalcharges
+        # fixing totalcharges
         if 'TotalCharges' in df.columns:
-            # convert to numeric (empty strings become nan)
+            # converting to numeric empty strings become nan
             df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
-            # fill nans with median (very few missing values)
+            # fill nans with median very few missing values
             median_val = df['TotalCharges'].median()
             df['TotalCharges'] = df['TotalCharges'].fillna(median_val)
             logger.info("[2] fixed totalcharges: filled missing with median (%.2f)", median_val)
 
 
-        # [3] create new features
-        # 3a. tenure_group (categorical bins)
+        # creating new features
+        # tenuregroup categorical bins
         df['tenure_group'] = pd.cut(
             df['tenure'],
             bins=Config.TENURE_BINS,
@@ -52,13 +52,13 @@ class Preprocessor:
         )
         logger.info("[3a] created tenure_group with bins: %s", Config.TENURE_LABELS)
 
-        # 3b. avg_monthly_spend = totalcharges / (tenure + 1)
-        # add 1 to avoid division by zero for tenure = 0
+        # avgmonthlyspend totalcharges tenure 1
+        # adding 1 to avoid division by zero for tenure
         df['avg_monthly_spend'] = df['TotalCharges'] / (df['tenure'] + 1)
         logger.info("[3b] created avg_monthly_spend feature")
 
 
-        # [4] separate features and target
+        # separating features and target
 
         target = Config.TARGET_COL
         if target not in df.columns:
@@ -70,7 +70,7 @@ class Preprocessor:
                    sum(y), len(y) - sum(y))
 
 
-        # [5] define column types for transformer
+        # defining column types for transformer
         # numeric features will be scaled
         numeric_features = [
             'tenure',
@@ -79,8 +79,8 @@ class Preprocessor:
             'avg_monthly_spend'
         ]
 
-        # categorical features will be one-hot encoded
-        # seniorcitizen is numeric (0/1), not categorical in this dataset
+        # categorical features will be onehot encoded
+        # seniorcitizen is numeric 0 or 1 not categorical in this dataset
         categorical_features = [
             'gender', 'Partner', 'Dependents',
             'PhoneService', 'MultipleLines', 'InternetService',
@@ -98,7 +98,7 @@ class Preprocessor:
         logger.info("[5] categorical features: %s", categorical_features)
 
 
-        # [6] build columntransformer pipeline
+        # building columntransformer pipeline
         numeric_transformer = Pipeline(steps=[
             ('scaler', StandardScaler())
         ])
@@ -112,17 +112,17 @@ class Preprocessor:
                 ('num', numeric_transformer, numeric_features),
                 ('cat', categorical_transformer, categorical_features)
             ],
-            remainder='drop'  # drop any columns not explicitly handled
+            remainder='drop'  # dropping any columns not explicitly handled
         )
 
         # fit and transform
         X_processed = preprocessor.fit_transform(X)
         logger.info("[6] preprocessor fitted. transformed shape: %s", X_processed.shape)
 
-        # store pipeline for later use (deployment)
+        # storing pipeline for later use deployment
         self.pipeline = preprocessor
 
-        # store feature names for interpretation
+        # storing feature names for interpretation
         num_feature_names = numeric_features
 
         cat_encoder = preprocessor.named_transformers_['cat'].named_steps['onehot']
@@ -132,7 +132,7 @@ class Preprocessor:
         logger.info("[6] total features after encoding: %d", len(self.feature_names))
 
 
-        # [7] train/test split
+        # traintest split
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             X_processed,
             y,
@@ -154,14 +154,14 @@ class Preprocessor:
 
         X = X_raw.copy()
 
-        # create tenure_group
+        # creating tenuregroup
         X['tenure_group'] = pd.cut(
             X['tenure'],
             bins=Config.TENURE_BINS,
             labels=Config.TENURE_LABELS
         )
 
-        # create avg_monthly_spend
+        # creating avgmonthlyspend
         X['avg_monthly_spend'] = X['TotalCharges'] / (X['tenure'] + 1)
 
         X_processed = self.pipeline.transform(X)

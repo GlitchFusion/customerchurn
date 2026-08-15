@@ -1,4 +1,4 @@
-# create_dirs.py
+# createdirspy
 import os
 from config.configs import Config
 

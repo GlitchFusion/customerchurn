@@ -1,4 +1,4 @@
-# IMPORTS
+# importing modules
 import numpy as np
 from sklearn.metrics import (
     accuracy_score,
@@ -9,7 +9,7 @@ from sklearn.metrics import (
     confusion_matrix
 )
 
-# LOCAL IMPORTS
+# importing local modules
 from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -23,7 +23,7 @@ def compute_all_metrics(y_true, y_pred, y_pred_proba):
     f1 = f1_score(y_true, y_pred, zero_division=0)
     roc_auc = roc_auc_score(y_true, y_pred_proba)
 
-    # get confusion matrix
+    # getting confusion matrix
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
 
     logger.info("confusion matrix:")

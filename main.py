@@ -1,7 +1,7 @@
-# IMPORTS
+# importing modules
 import pandas as pd
 
-# LOCAL IMPORTS
+# importing local modules
 from config.configs import Config
 from src.utils.logger import setup_logger
 from src.utils.io_helpers import save_model, save_preprocessor
@@ -14,7 +14,7 @@ from src.evaluation.benchmark import run_benchmark
 from src.evaluation.visualizer import generate_all_plots
 from src.evaluation.metrics import print_metrics_comparison
 
-# set up logger
+# setting up logger
 logger = setup_logger(__name__)
 
 
@@ -24,19 +24,19 @@ def main():
     logger.info("\n")
 
   
-    # load raw data
+    # loading raw data
     logger.info("loading raw data...")
     df = load_raw_data()
     logger.info("loaded %d rows and %d columns", df.shape[0], df.shape[1])
 
   
-    # run exploratory data analysis
+    # running exploratory data analysis
     logger.info("running exploratory data analysis...")
     eda_findings = EDA(df)
     logger.info("eda complete! yay!")
     logger.info("key findings: churn percentage = %.2f%%", eda_findings.get('churn_percentage', 0))
 
-    # print summary statistics for reference
+    # printing summary statistics for reference
     summary_stats = get_summart_stats(df)
     logger.info("summary statistics:\n%s", summary_stats.to_string())
 
@@ -51,12 +51,12 @@ def main():
     logger.info("test set: %d samples", X_test.shape[0])
     logger.info("features after encoding: %d", X_train.shape[1])
 
-    # save the preprocessor for deployment
+    # saving the preprocessor for deployment
     preprocessor.save()
     logger.info("preprocessor saved successfully!")
 
   
-    # train custom model
+    # training custom model
     logger.info("training custom model...")
     custom_model, custom_metrics = train_custom_model(X_train, X_test, y_train, y_test)
 
@@ -69,7 +69,7 @@ def main():
     logger.info("    roc-auc: %.4f", custom_metrics['roc_auc'])
 
   
-    # benchmark against scikit-learn
+    # benchmark against scikitlearn
     logger.info("running benchmark comparison...")
     sklearn_metrics = run_benchmark(X_train, X_test, y_train, y_test, custom_metrics)
 
@@ -100,7 +100,7 @@ def main():
     logger.info("pipeline complete! success!")
     logger.info("\n")
     
-    # print final comparison summary
+    # printing final comparison summary
     print_metrics_comparison(custom_metrics, sklearn_metrics)
 
     logger.info("\n")

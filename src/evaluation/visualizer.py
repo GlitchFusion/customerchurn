@@ -1,4 +1,4 @@
-# IMPORTS
+# importing modules
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics import (roc_curve, auc, confusion_matrix, precision_recall_curve, precision_score, recall_score, f1_score)
 
-# LOCAL IMPORTS
+# importing local modules
 from config.configs import Config
 
 # styling
@@ -31,7 +31,7 @@ def _save_or_show(fig, filename=None, save=True):
 # exploratory data analysis (eda) plots
 def plot_target_distribution(df, target_col='Churn', save=True):
     fig, ax = plt.subplots(figsize=(6, 4))
-    df[target_col].value_counts().plot(kind='bar', ax=ax, color=['#1f77b4', '#ff7f0e'])
+    df[target_col].value_counts().plot(kind='bar', ax=ax, color=['# 77b4', '#ff7f0e'])
     ax.set_title('target variable distribution', fontsize=14)
     ax.set_xlabel('churn')
     ax.set_ylabel('count')
@@ -46,7 +46,7 @@ def plot_target_distribution(df, target_col='Churn', save=True):
 def plot_categorical_churn(df, cat_col, target_col='Churn', save=True):
     fig, ax = plt.subplots(figsize=(10, 5))
     churn_rate = pd.crosstab(df[cat_col], df[target_col], normalize='index') * 100
-    churn_rate.plot(kind='bar', stacked=True, ax=ax, color=['#1f77b4', '#ff7f0e'])
+    churn_rate.plot(kind='bar', stacked=True, ax=ax, color=['# 77b4', '#ff7f0e'])
     ax.set_title(f'churn rate by {cat_col}', fontsize=14)
     ax.set_ylabel('percentage (%)')
     ax.set_xlabel(cat_col)
@@ -57,7 +57,7 @@ def plot_categorical_churn(df, cat_col, target_col='Churn', save=True):
 
 def plot_numerical_distribution(df, num_col, save=True):
     fig, ax = plt.subplots(figsize=(8, 4))
-    sns.histplot(df[num_col], kde=True, ax=ax, color='#2ca02c')
+    sns.histplot(df[num_col], kde=True, ax=ax, color='# a02c')
     ax.set_title(f'distribution of {num_col}', fontsize=14)
     ax.set_xlabel(num_col)
     _save_or_show(fig, f'distribution_{num_col}', save)
@@ -82,18 +82,16 @@ def plot_correlation_matrix(df, numeric_cols=None, save=True):
 def plot_churn_boxplot(df, num_col, target_col='Churn', save=True):
     fig, ax = plt.subplots(figsize=(8, 5))
     sns.boxplot(x=target_col, y=num_col, data=df, ax=ax,
-                palette=['#1f77b4', '#ff7f0e'])
+                palette=['# 77b4', '#ff7f0e'])
     ax.set_title(f'{num_col} by churn', fontsize=14)
     _save_or_show(fig, f'boxplot_{num_col}_by_churn', save)
 
 
 
 # training diagnostics
-
-
 def plot_loss_curve(loss_history, save=True):
     fig, ax = plt.subplots(figsize=(8, 5))
-    ax.plot(loss_history, color='#d62728', linewidth=2)
+    ax.plot(loss_history, color='# d62728', linewidth=2)
     ax.set_title('loss over epochs (training)', fontsize=14)
     ax.set_xlabel('epochs')
     ax.set_ylabel('log-loss (cross-entropy)')
@@ -102,14 +100,13 @@ def plot_loss_curve(loss_history, save=True):
 
 
 
-# model evaluation plots
-
+# model evaluation plots.
 
 def plot_confusion_matrix(y_true, y_pred, labels=None, save=True):
     cm = confusion_matrix(y_true, y_pred)
     fig, ax = plt.subplots(figsize=(6, 5))
     
-    # create heatmap without tick labels (they will be shown on webpage)
+    # creating heatmap without tick labels (they will be shown on webpage).
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax,
                 xticklabels=False, yticklabels=False, cbar=True)
     
@@ -180,7 +177,7 @@ def plot_feature_importance(weights, feature_names, top_n=20, save=True):
     coef_df = coef_df.sort_values('abs_weight', ascending=False).head(top_n)
 
     fig, ax = plt.subplots(figsize=(10, max(6, top_n * 0.3)))
-    colors = ['#ff7f0e' if w > 0 else '#1f77b4' for w in coef_df['weight']]
+    colors = ['# ff7f0e' if w > 0 else '#1f77b4' for w in coef_df['weight']]
     ax.barh(coef_df['feature'], coef_df['weight'], color=colors, alpha=0.8)
     ax.axvline(x=0, color='black', linestyle='-', linewidth=0.8)
     ax.set_title(f'top {top_n} feature coefficients (impact on churn)', fontsize=14)
@@ -216,7 +213,7 @@ def plot_threshold_analysis(y_true, y_proba, save=True):
 
 
 
-# batch generator – running everything at once!
+# batch generator – running everything at once
 def generate_all_plots(df, target_col, custom_model, sklearn_model, X_test, y_test, feature_names, loss_history):
 
     print("generating all plots...")

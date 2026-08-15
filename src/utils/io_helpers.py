@@ -1,15 +1,15 @@
-# IMPORTS
+# importing modules
 import os
 import joblib
 
-# LOCAL IMPORTS
+# importing local modules
 from config.configs import Config
 from src.utils.logger import setup_logger
 
-# at the top of io_helpers.py
+# at the top of iohelperspy
 logger = setup_logger(__name__)
 if logger is None:
-    # fallback: create a basic logger
+    # fallback create a basic logger
     import logging
     logger = logging.getLogger(__name__)
     logging.basicConfig(level=logging.INFO)
@@ -18,13 +18,13 @@ if logger is None:
 
 def save_model(model, filepath):
     try:
-        # check if directory exists, create if not
+        # check if directory exists create if not
         directory = os.path.dirname(filepath)
         if directory and not os.path.exists(directory):
             os.makedirs(directory)
             logger.info("created directory: %s", directory)
 
-        # save the model
+        # saving the model
         joblib.dump(model, filepath)
         logger.info("model saved successfully to: %s yay!", filepath)
         return True

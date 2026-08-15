@@ -1,7 +1,7 @@
-# IMPORTS
+# importing modules
 import joblib
 
-# LOCAL IMPORTS
+# importing local modules
 from config.configs import Config
 from src.utils.logger import setup_logger
 from src.evaluation.metrics import compute_all_metrics, print_metrics_comparison
@@ -15,18 +15,18 @@ def run_benchmark(X_train, X_test, y_train, y_test, custom_metrics):
     logger.info("starting benchmark comparison")
     logger.info("=" * 50)
 
-    # [1] train sklearn model using the trainer function
+    # training sklearn model using the trainer function
     logger.info("[1] training scikit-learn model...")
     sklearn_metrics = train_sklearn_model(X_train, X_test, y_train, y_test)
 
-    # [2] print side-by-side comparison
+    # printing sidebyside comparison
     logger.info("[2] comparison results:")
     print_metrics_comparison(custom_metrics, sklearn_metrics)
 
-    # [3] determine which model performed better
+    # determining which model performed better
     logger.info("[3] summary:")
 
-    # compare f1 score (good for imbalanced data)
+    # comparing f1 score good for imbalanced data
     custom_f1 = custom_metrics.get('f1', 0)
     sklearn_f1 = sklearn_metrics.get('f1', 0)
 
@@ -39,7 +39,7 @@ def run_benchmark(X_train, X_test, y_train, y_test, custom_metrics):
     else:
         logger.info("    both models have the same f1 score (%.4f)", custom_f1)
 
-    # compare roc-auc
+    # comparing rocauc
     custom_auc = custom_metrics.get('roc_auc', 0)
     sklearn_auc = sklearn_metrics.get('roc_auc', 0)
 

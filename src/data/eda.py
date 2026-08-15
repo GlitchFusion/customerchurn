@@ -1,8 +1,8 @@
-# IMPROTS
+# importing modules
 import pandas as pd
 import numpy as np
 
-# LOCAL IMPORTS
+# importing local modules
 from config.configs import Config
 from src.utils.logger import setup_logger
 from src.evaluation.visualizer import (
@@ -21,13 +21,13 @@ def EDA(df: pd.DataFrame) -> dict:
     findings = {}
 
 
-    # BASIC INFORMATION
+    # getting basic information
     logger.info("[1] Basic information about the dataset")
     logger.info(f"Dataset shape: {df.shape}\nRows: {df.shape[0]}\nColumns: {df.shape[1]}")
     logger.info(f"Data Types: \n{df.dtypes.to_string()}")
 
 
-    # ANALYZING MISSING VALUES
+    # analyzing missing values
     missing_values = df.isnull().sum()
     missing_values_percentage = (missing_values / len(df)) * 100
     missing_values_df = pd.DataFrame({
@@ -44,7 +44,7 @@ def EDA(df: pd.DataFrame) -> dict:
         findings["missing_values"] = {}
 
 
-    # TARGET VARAIABLE DISTIBUTION
+    # analyzing target variable distribution
     logger.info("[3] Target variable analysis")
     target = Config.TARGET_COL
     if target in df.columns:
@@ -59,7 +59,7 @@ def EDA(df: pd.DataFrame) -> dict:
         logger.warning(f"target column '{target}' not found in dataset")
 
 
-    # CATEGORICAL FEATURE ANALYSIS
+    # analyzing categorical features
     logger.info("[4] Categorical Feature Analysis")
     category_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
 
@@ -77,7 +77,7 @@ def EDA(df: pd.DataFrame) -> dict:
             plot_categorical_churn(df, col, target_col = target, save=True)
 
 
-    # NUMERIC FEATURE ANALYSIS
+    # analyzing numeric features
     logger.info("[5] Numeric Feature Analysis")
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
     numeric_cols = [c for c in numeric_cols if c not in [Config.TARGET_COL]]
@@ -87,16 +87,16 @@ def EDA(df: pd.DataFrame) -> dict:
         logger.info(f"- {col}")
         logger.info(f"  {stats.to_string()}")
 
-    # generating distribution plot - target_col removed
+    # generating distribution plot targetcol removed
     plot_numerical_distribution(df, col, save=True) 
     if target in df.columns:
         plot_churn_boxplot(df, col, target_col=target, save=True)
 
 
-    # CORRELATION ANALYSIS
+    # analyzing correlations
     logger.info("[6] Correlation Matrix") # only numerical features included
 
-    # converting TotalCharges to numrical value - temporary
+    # converting totalcharges to numrical value temporary
     
     temp_df = df.copy()
     if "TotalCharges" in temp_df.columns:
@@ -113,7 +113,7 @@ def EDA(df: pd.DataFrame) -> dict:
         logger.warning("No numeric columns found for correlation matrix!!")
 
 
-    # ADDITIONAL INSIGHT.
+    # additional insight
     logger.info("[7] Additional insight")
     # checking for constant
     const_cols = [c for c in df.columns if df[c].nunique() == 1]
@@ -122,13 +122,13 @@ def EDA(df: pd.DataFrame) -> dict:
     else:
         logger.info("- No constant columns found!")
 
-    # checking id customerID is unique
+    # checking id customerid is unique
     if Config.ID_COL in df.columns:
         is_unique = df[Config.ID_COL].nunique == len(df)
         logger.info(f"- CustomeID is quinque: {is_unique}")
 
 
-    # PROCESS FINSIH
+    # processing finsih
     logger.info("\n\n")
     logger.info("EDA COMPLETED SUCCESSFULLY")
     logger.info("All EDA plots saved to: %s", Config.FIGURES_DIR)
