@@ -25,25 +25,25 @@ def train_custom_model(X_train, X_test, y_train, y_test):
         reg_lambda=Config.REG_LAMBDA
     )
 
-    logger.info("[1] model initialized with:")
+    logger.info("model initialized with:")
     logger.info("    learning_rate: %s", Config.LEARNING_RATE)
     logger.info("    epochs: %s", Config.EPOCHS)
     logger.info("    class_weight: %s", Config.CLASS_WEIGHT)
     logger.info("    regularization: %s", Config.REGULARIZATION)
 
     # training the model
-    logger.info("[2] training model...")
+    logger.info("training model...")
     model.fit(X_train, y_train)
 
     # getting predictions on test data
-    logger.info("[3] generating predictions on test data...")
+    logger.info("generating predictions on test data...")
     y_pred_proba = model.predict_proba(X_test)
     y_pred = model.predict(X_test)
 
     logger.info("    predictions complete")
 
     # computing evaluation metrics
-    logger.info("[4] computing evaluation metrics...")
+    logger.info("computing evaluation metrics...")
     metrics = compute_all_metrics(y_test, y_pred, y_pred_proba)
 
     logger.info("    accuracy: %.4f", metrics['accuracy'])
@@ -53,12 +53,12 @@ def train_custom_model(X_train, X_test, y_train, y_test):
     logger.info("    roc_auc: %.4f", metrics['roc_auc'])
 
     # saving the trained model to disk
-    logger.info("[5] saving model to disk...")
+    logger.info("saving model to disk...")
     joblib.dump(model, Config.CUSTOM_MODEL_PATH)
     logger.info("    model saved to: %s", Config.CUSTOM_MODEL_PATH)
 
     # saving metrics to json file for the web app
-    logger.info("[6] saving metrics to json file...")
+    logger.info("saving metrics to json file...")
     metrics_file = os.path.join(Config.MODEL_DIR, 'metrics.json')
     
     # converting numpy float values to python float for json serialization
@@ -81,19 +81,19 @@ def train_custom_model(X_train, X_test, y_train, y_test):
 
     # logging final loss for reference
     final_loss = model.loss_history[-1] if model.loss_history else None
-    logger.info("[7] final training loss: %.6f", final_loss)
+    logger.info("final training loss: %.6f", final_loss)
 
-    logger.info("=" * 50)
+
     logger.info("training complete!")
-    logger.info("=" * 50)
+
 
     return model, metrics
 
 
 def train_sklearn_model(X_train, X_test, y_train, y_test):
-    logger.info("=" * 50)
+
     logger.info("training scikit-learn model for benchmarking")
-    logger.info("=" * 50)
+
 
     # initializing sklearn model with similar parameters
     model = LogisticRegression(
@@ -103,19 +103,19 @@ def train_sklearn_model(X_train, X_test, y_train, y_test):
         solver='lbfgs'
     )
 
-    logger.info("[1] sklearn model initialized")
+    logger.info("sklearn model initialized")
 
     # training the model
-    logger.info("[2] training sklearn model...")
+    logger.info("training sklearn model...")
     model.fit(X_train, y_train)
 
     # getting predictions
-    logger.info("[3] generating predictions...")
+    logger.info("generating predictions...")
     y_pred = model.predict(X_test)
     y_pred_proba = model.predict_proba(X_test)[:, 1]
 
     # computing metrics
-    logger.info("[4] computing evaluation metrics...")
+    logger.info("computing evaluation metrics...")
     metrics = compute_all_metrics(y_test, y_pred, y_pred_proba)
 
     logger.info("    accuracy: %.4f", metrics['accuracy'])
@@ -125,12 +125,12 @@ def train_sklearn_model(X_train, X_test, y_train, y_test):
     logger.info("    roc_auc: %.4f", metrics['roc_auc'])
 
     # saving the sklearn model
-    logger.info("[5] saving sklearn model...")
+    logger.info("saving sklearn model...")
     joblib.dump(model, Config.SKLEARN_MODEL_PATH)
     logger.info("    model saved to: %s", Config.SKLEARN_MODEL_PATH)
 
     # saving sklearn metrics to separate json file
-    logger.info("[6] saving sklearn metrics to json file...")
+    logger.info("saving sklearn metrics to json file...")
     metrics_file = os.path.join(Config.MODEL_DIR, 'sklearn_metrics.json')
     
     metrics_serializable = {
@@ -150,8 +150,8 @@ def train_sklearn_model(X_train, X_test, y_train, y_test):
     
     logger.info("    sklearn metrics saved to: %s", metrics_file)
 
-    logger.info("=" * 50)
+
     logger.info("sklearn training complete!")
-    logger.info("=" * 50)
+
 
     return metrics
