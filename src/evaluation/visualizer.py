@@ -31,7 +31,7 @@ def _save_or_show(fig, filename=None, save=True):
 # exploratory data analysis (eda) plots
 def plot_target_distribution(df, target_col='Churn', save=True):
     fig, ax = plt.subplots(figsize=(6, 4))
-    df[target_col].value_counts().plot(kind='bar', ax=ax, color=['# 77b4', '#ff7f0e'])
+    df[target_col].value_counts().plot(kind='bar', ax=ax, color=['#1f77b4', '#ff7f0e'])
     ax.set_title('target variable distribution', fontsize=14)
     ax.set_xlabel('churn')
     ax.set_ylabel('count')
